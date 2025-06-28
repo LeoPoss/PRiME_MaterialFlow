@@ -10,7 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "bpmn-js": "^18.3.0",
+    "bpmn-js": "^18.6.2",
     "d3": "^7.9.0"
   }
 }

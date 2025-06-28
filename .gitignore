@@ -38,4 +38,3 @@ out/
 
 ### Kotlin ###
 .kotlin
-/src/main/resources/META-INF/resources/webjars/camunda/app/cockpit/scripts/sankey-plugin/node_modules/

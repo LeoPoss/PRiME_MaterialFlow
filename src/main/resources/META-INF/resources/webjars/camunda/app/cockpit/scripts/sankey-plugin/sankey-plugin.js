@@ -2,46 +2,27 @@
  * Configuration for the Sankey Diagram Plugin
  */
 const PLUGIN_CONFIG = {
-    id: "sankeyOverlay",
-    pluginPoint: "cockpit.processDefinition.diagram.plugin",
-    priority: 0,
+    id: "sankeyOverlay", pluginPoint: "cockpit.processDefinition.diagram.plugin", priority: 0,
 
     // Constants
-    TASK_TYPES: [
-        "bpmn:Task",
-        "bpmn:ManualTask",
-        "bpmn:UserTask",
-        "bpmn:ServiceTask",
-        "bpmn:ScriptTask",
-        "bpmn:BusinessRuleTask"
-    ],
+    TASK_TYPES: ["bpmn:Task", "bpmn:ManualTask", "bpmn:UserTask", "bpmn:ServiceTask", "bpmn:ScriptTask", "bpmn:BusinessRuleTask"],
 
     // Styling
     STYLES: {
         container: {
-            position: "absolute",
-            zIndex: "1000"
-        },
-        link: {
-            fill: "none",
-            strokeOpacity: 0.7,
-            minStrokeWidth: 3
-        },
-        label: {
-            fontSize: "16px",
-            fontWeight: "bold",
-            fill: "black"
-        },
-        nodeLabel: {
-            fontSize: "10px",
-            textAnchor: "end"
+            position: "absolute", zIndex: "1000"
+        }, link: {
+            fill: "none", strokeOpacity: 0.7, minStrokeWidth: 3
+        }, label: {
+            fontSize: "16px", fontWeight: "bold", fill: "black"
+        }, nodeLabel: {
+            fontSize: "10px", textAnchor: "end"
         }
     }
 };
 
 export default {
-    ...PLUGIN_CONFIG,
-    /**
+    ...PLUGIN_CONFIG, /**
      * Renders the Sankey diagram overlay on the BPMN diagram
      * @param {Object} viewer - The Camunda viewer instance
      */
@@ -96,8 +77,7 @@ export default {
         const createSankeyContainer = () => {
             const container = document.createElement("div");
             Object.assign(container.style, PLUGIN_CONFIG.STYLES.container, {
-                width: `${imgWidth}px`,
-                height: `${containerHeight}px`
+                width: `${imgWidth}px`, height: `${containerHeight}px`
             });
 
             container.innerHTML = `
@@ -183,7 +163,6 @@ export default {
             // Initialize Sankey layout
             const sankey = d3.sankey()
                 .nodeId(d => d.id)
-                .linkSort()
                 .nodeWidth(15)
                 .nodePadding(10)
                 .size([imgWidth, imgHeight]);
@@ -192,21 +171,18 @@ export default {
             const {nodes, links} = sankey({
                 nodes: sankeyData.nodes.map(node => ({
                     ...node,
-                    // Add any node transformations here
-                })),
-                links: sankeyData.links.map(link => ({
+                })), links: sankeyData.links.map(link => ({
                     source: link.source,
                     target: link.target,
                     value: link.value,
                     material: link.material,
-                    unit: link.unit  // Remove default fallback to handle null/undefined properly
+                    unit: link.unit
                 }))
             });
 
             // Adjust node heights for better visualization
             nodes.forEach(node => {
-                const isMiddleNode = links.some(link => link.source.id === node.id) &&
-                    links.some(link => link.target.id === node.id);
+                const isMiddleNode = links.some(link => link.source.id === node.id) && links.some(link => link.target.id === node.id);
                 if (isMiddleNode) {
                     node.height = 80; // Fixed height for middle nodes
                 }
@@ -329,8 +305,7 @@ export default {
                 }
 
                 // Apply minimum and maximum width constraints
-                return Math.max(PLUGIN_CONFIG.STYLES.link.minStrokeWidth,
-                    Math.min(computedWidth, maxAllowed));
+                return Math.max(PLUGIN_CONFIG.STYLES.link.minStrokeWidth, Math.min(computedWidth, maxAllowed));
             };
 
             // Draw the link paths
@@ -351,7 +326,7 @@ export default {
                 console.info(`Node "${node.id}" is a task:`, isMiddleNode);
             });
 
-q
+
             /**
              * Renders the nodes of the Sankey diagram
              */
