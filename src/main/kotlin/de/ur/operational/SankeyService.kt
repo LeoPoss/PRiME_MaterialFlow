@@ -9,21 +9,20 @@ import org.springframework.stereotype.Service
 @Service
 class SankeyService(private val modelService: ModelService, private val materialService: MaterialService) {
     /**
-     * Generates a Sankey diagram based on the task order and material requirements.
+     * Generates sankey diagram data based on the task order and material requirements.
      */
     fun generateSankeyData(): SankeyData {
         val taskOrder = modelService.loadTaskOrder()
 
         val listTaskRequirements = materialService.extractMaterialRequirements()
 
-        val (intermediateMaterialRequirements, materialRequirements) = listTaskRequirements
-            .flatMap { it.requirements }
-            .map { it.materialName to it.materialType }
-            .distinct()
-            .partition { (_, materialType) -> materialType.lowercase().trim() == "intermediate" }
-            .let { (intermediates, others) ->
-                intermediates.map { it.first }.distinct() to others.map { it.first }.distinct()
-            }
+        val (intermediateMaterialRequirements, materialRequirements) =
+            listTaskRequirements.flatMap { it.requirements }
+                .map { it.materialName to it.materialType }.distinct()
+                .partition { (_, materialType) -> materialType.lowercase().trim() == "intermediate" }
+                .let { (intermediates, others) ->
+                    intermediates.map { it.first }.distinct() to others.map { it.first }.distinct()
+                }
 
         val tailwind400Colors = listOf(
             "#f43f5e", // rose-500
@@ -62,14 +61,13 @@ class SankeyService(private val modelService: ModelService, private val material
 
 
         // Combine material nodes with finished product and nodes for tasks (middle nodes)
-        val nodes = materialNodes + SankeyNode(
-            "FinishedGood", "endEvent", "#737373"
-        ) + taskOrder.map { taskId ->
-            SankeyNode("", taskId)
-        }
+        val nodes = materialNodes +
+                SankeyNode("FinishedGood", "endEvent", "#737373") +
+                taskOrder.map { taskId ->
+                    SankeyNode("", taskId)
+                }
 
         // add flows
-
         val links = buildList {
             var previousTask: String? = ""
             listTaskRequirements.filter { it.taskId in taskOrder }.forEach { taskReq ->
@@ -94,10 +92,7 @@ class SankeyService(private val modelService: ModelService, private val material
         val lastMaterialConsumingTask = findLastMaterialConsumingTask(taskOrder, listTaskRequirements)
         if (lastMaterialConsumingTask != null) {
             links += SankeyLink(
-                material = "FinishedGood",
-                source = lastMaterialConsumingTask,
-                target = "endEvent",
-                value = 1
+                material = "FinishedGood", source = lastMaterialConsumingTask, target = "endEvent", value = 1
             )
         }
 
@@ -107,16 +102,11 @@ class SankeyService(private val modelService: ModelService, private val material
         )
     }
 
-    /**
-     * Finds the last material consuming task in the task execution order.
-     */
     private fun findLastMaterialConsumingTask(
         taskExecutionOrder: List<String?>, taskRequirementsMap: List<TaskMaterialRequirements>
     ): String? {
-        val tasksWithRequirements = taskRequirementsMap.map { it.taskId }.toSet()
-
         return taskExecutionOrder.reversed().firstOrNull { taskId ->
-            taskId != null && taskId in tasksWithRequirements
+            taskId != null && taskRequirementsMap.any { it.taskId == taskId }
         }
     }
 }

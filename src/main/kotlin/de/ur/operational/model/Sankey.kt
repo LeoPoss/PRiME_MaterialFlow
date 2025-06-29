@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class SankeyData(
-    val nodes: List<SankeyNode>, val links: List<SankeyLink>
+    val nodes: List<SankeyNode>,
+    val links: List<SankeyLink>
 )
 
 data class SankeyNode(

@@ -22,7 +22,7 @@ class MaterialService {
     private val yamlMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
 
     init {
-        // Configure mappers to be lenient with unknown properties
+        // added for unknown/unparsable parameters
         jsonMapper.findAndRegisterModules()
         yamlMapper.findAndRegisterModules()
     }

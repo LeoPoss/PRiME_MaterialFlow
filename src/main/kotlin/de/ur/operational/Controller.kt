@@ -16,13 +16,13 @@ class SankeyController(
 ) {
 
     @GetMapping("/order")
-    fun getTaskOrder(): ResponseEntity<List<String>?> {
+    fun getTaskOrder(): ResponseEntity<List<String>> {
         val result = modelService.loadTaskOrder()
         return ResponseEntity.ok(result)
     }
 
     @GetMapping("/sankey")
-    fun getSankeyData(): ResponseEntity<SankeyData?> {
+    fun getSankeyData(): ResponseEntity<SankeyData> {
         val result = sankeyService.generateSankeyData()
         return ResponseEntity.ok(result)
     }
