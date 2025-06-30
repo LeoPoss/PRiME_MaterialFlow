@@ -1,15 +1,55 @@
 const PLUGIN_CONFIG = {
-    id: "sankeyOverlay", pluginPoint: "cockpit.processDefinition.diagram.plugin", priority: 0,
+    id: "sankeyOverlay", 
+    pluginPoint: "cockpit.processDefinition.diagram.plugin", 
+    priority: 0,
     TASK_TYPES: ["bpmn:Task", "bpmn:ManualTask", "bpmn:UserTask", "bpmn:ServiceTask", "bpmn:ScriptTask", "bpmn:BusinessRuleTask"],
+    
+    CSS_VARIABLES: {
+        text: {
+            task: 'var(--sankey-task)',
+            finished: 'var(--sankey-finished)',
+            default: 'var(--sankey-default)',
+            materials: [
+                'var(--sankey-text-1)',
+                'var(--sankey-text-2)',
+                'var(--sankey-text-3)',
+                'var(--sankey-text-4)',
+                'var(--sankey-text-5)',
+                'var(--sankey-text-6)',
+                'var(--sankey-text-7)'
+            ]
+        },
+        link: {
+            materials: [
+                'var(--sankey-material-1)',
+                'var(--sankey-material-2)',
+                'var(--sankey-material-3)',
+                'var(--sankey-material-4)',
+                'var(--sankey-material-5)',
+                'var(--sankey-material-6)',
+                'var(--sankey-material-7)'
+            ]
+        }
+    },
+    
     STYLES: {
         container: {
-            position: "absolute", zIndex: "1000"
-        }, link: {
-            fill: "none", strokeOpacity: 0.7, minStrokeWidth: 3
-        }, label: {
-            fontSize: "16px", fontWeight: "bold", fill: "black"
-        }, nodeLabel: {
-            fontSize: "10px", textAnchor: "end"
+            position: "absolute",
+            zIndex: "1000"
+        },
+        link: {
+            fill: "none",
+            strokeOpacity: 0.7,
+            minStrokeWidth: 3
+        },
+        label: {
+            fontSize: "16px",
+            fontWeight: "bold",
+            fill: "black"
+        },
+        nodeLabel: {
+            fontSize: "10px",
+            textAnchor: "end"
         }
     }
 };
@@ -163,19 +203,55 @@ export default {
                 .nodePadding(10)
                 .size([imgWidth, imgHeight])
                 .linkSort((a, b) => {
-                    // Group source nodes by type via color
-                    const colorA = a.source.color || "#000000";
-                    const colorB = b.source.color || "#000000";
-                    return d3.descending(colorB, colorA);
+                    // Skip sorting if either source type is null
+                    if (!a.source.type && !b.source.type) return 0;
+                    if (!a.source.type) return 1; // Put nodes with null type at the end
+                    if (!b.source.type) return -1; // Put nodes with null type at the end
+                    
+                    // Sort alphabetically by type
+                    return a.source.type.localeCompare(b.source.type);
                 });
 
             // Process nodes and links
             const {nodes, links} = sankey({
-                nodes: sankeyData.nodes.map(node => ({
-                    ...node
-                })), links: sankeyData.links.map(link => ({
+                nodes: sankeyData.nodes.map(node => {
+                    // Set node type and initial color (text color)
+                    const type = node.type || 'default';
+                    let color;
+                    
+                    if (type === 'task') {
+                        color = PLUGIN_CONFIG.CSS_VARIABLES.text.task;
+                    } else {
+                        color = PLUGIN_CONFIG.CSS_VARIABLES.text.default;
+                    }
+                    
+                    return {
+                        ...node,
+                        type: type,
+                        color: color,
+                        textColor: color // Store text color separately
+                    };
+                }),
+                links: sankeyData.links.map(link => ({
                     ...link
                 }))
+            });
+            
+            // Assign material colors to material types
+            const materialTypes = [...new Set(nodes
+                .filter(node => !['task', 'finished', 'default'].includes(node.type))
+                .map(node => node.type))];
+                
+            materialTypes.forEach((type, index) => {
+                const colorIndex = index % PLUGIN_CONFIG.CSS_VARIABLES.link.materials.length;
+                nodes.forEach(node => {
+                    if (node.type === type) {
+                        // Use 500 variant for node fill/text
+                        node.textColor = PLUGIN_CONFIG.CSS_VARIABLES.text.materials[colorIndex];
+                        // Use 300 variant for links
+                        node.color = PLUGIN_CONFIG.CSS_VARIABLES.link.materials[colorIndex];
+                    }
+                });
             });
 
             // First, identify all start nodes
@@ -303,20 +379,22 @@ export default {
                 return;
             }
 
-            const linkGroup = g.append("g");
+            // Add a class to the main SVG for better CSS targeting
+            svg.attr('class', 'sankey-diagram');
+
+            const linkGroup = g.append("g").attr('class', 'sankey-links');
             const linkPaths = linkGroup.selectAll("path")
                 .data(links)
                 .enter()
                 .append("path")
                 .attr("d", customLinkPath)
                 .attr("id", (_, i) => `linkPath${i}`)
-                .style("fill", "none")
+                .attr("class", "sankey-link")
                 .style("stroke", d => d.source.color)
-                .style("stroke-opacity", PLUGIN_CONFIG.STYLES.link.strokeOpacity)
                 .style("stroke-width", calculateLinkWidth);
 
             // Render nodes
-            const nodeGroup = g.append("g");
+            const nodeGroup = g.append("g").attr('class', 'sankey-nodes');
             nodeGroup.selectAll("rect")
                 .data(nodes)
                 .enter()
@@ -325,6 +403,7 @@ export default {
                 .attr("y", d => d.y0)
                 .attr("height", d => d.y1 - d.y0)
                 .attr("width", d => d.x1 - d.x0)
+                .attr("class", d => `sankey-node ${d.type}`)
                 .style("fill", d => taskPositions.some(t => t.id === d.id) ? "none" : d.color)
                 .style("stroke", d => taskPositions.some(t => t.id === d.id) ? "none" : "black");
 
@@ -333,24 +412,31 @@ export default {
                 .text(d => `${d.source.name} → ${d.target.name}\n${d.material}: ${d.value} ${d.unit || 'unit'}${d.value !== 1 ? 's' : ''}`);
 
             // Add link labels
-            const textGroup = g.append("g");
+            const textGroup = g.append("g").attr('class', 'sankey-labels');
             textGroup.selectAll("text")
                 .data(links)
                 .enter()
                 .append("text")
+                .attr("class", "sankey-label")
                 .style("font-size", "16px")
                 .style("font-weight", "bolder")
-                .style("fill", d => d3.color(d.source.color).darker(1))
+                .each(function(d) {
+                    // Add white stroke for better readability
+                    d3.select(this)
+                        .style("paint-order", "stroke")
+                        .style("stroke", "white")
+                        .style("stroke-width", 2)
+                        .style("stroke-linecap", "round")
+                        .style("stroke-linejoin", "round");
+                })
                 .append("textPath")
                 .attr("href", (_, i) => `#linkPath${i}`)
                 .attr("startOffset", "2")
                 .attr("dy", "0.35em")
                 .style("text-anchor", "start")
                 .style("dominant-baseline", "middle")
-                .style("paint-order", "stroke")
-                .style("stroke", "white")
-                .style("stroke-width", 2)
-                .text(d => `${d.material}: ${d.value} ${d.unit || 'unit'}${d.value !== 1 ? 's' : ''}`);
+                .style("fill", d => d.source.textColor) // Use text color (500 variant)
+                .text(d => `${d.value} ${d.unit || '×'} ${d.material}`);
 
             // Ensure nodes are rendered above links
             d3.selectAll(".sankey-diagram rect").raise();

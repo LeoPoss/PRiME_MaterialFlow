@@ -11,7 +11,7 @@ data class SankeyData(
 data class SankeyNode(
     val name: String,
     val id: String,
-    val color: String = "#737373" // Default gray color
+    val type: String? = null
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
