@@ -1,13 +1,6 @@
-/**
- * Configuration for the Sankey Diagram Plugin
- */
 const PLUGIN_CONFIG = {
     id: "sankeyOverlay", pluginPoint: "cockpit.processDefinition.diagram.plugin", priority: 0,
-
-    // Constants
     TASK_TYPES: ["bpmn:Task", "bpmn:ManualTask", "bpmn:UserTask", "bpmn:ServiceTask", "bpmn:ScriptTask", "bpmn:BusinessRuleTask"],
-
-    // Styling
     STYLES: {
         container: {
             position: "absolute", zIndex: "1000"
@@ -22,10 +15,7 @@ const PLUGIN_CONFIG = {
 };
 
 export default {
-    ...PLUGIN_CONFIG, /**
-     * Renders the Sankey diagram overlay on the BPMN diagram
-     * @param {Object} viewer - The Camunda viewer instance
-     */
+    ...PLUGIN_CONFIG,
     render: (viewer) => {
         window.camundaViewer = viewer;
         console.log("Sankey Overlay Plugin loaded!");
@@ -54,7 +44,6 @@ export default {
 
         /**
          * Extracts and maps task positions from BPMN elements
-         * @returns {Array} Array of task position objects
          */
         const getTaskPositions = () => {
             return tasks.map(task => ({
@@ -71,8 +60,7 @@ export default {
         console.debug("Mapped BPMN task positions:", taskPositions);
 
         /**
-         * Creates the SVG container for the Sankey diagram
-         * @returns {HTMLElement} The created container element
+         * Creates the SVG container for the Sankey diagram 
          */
         const createSankeyContainer = () => {
             const container = document.createElement("div");
@@ -156,9 +144,17 @@ export default {
         const renderSankey = (container, imgWidth, imgHeight, sankeyData) => {
             d3.select(".sankey-diagram").selectAll("*").remove();
 
-            // Set up SVG and main group
+            // Set up SVG and main group with null checks
             const svg = d3.select(container).select("svg");
-            const g = svg.select("g.sankey-diagram");
+            if (svg.empty()) {
+                console.error("SVG container not found");
+                return;
+            }
+
+            let g = svg.select("g.sankey-diagram");
+            if (g.empty()) {
+                g = svg.append("g").attr("class", "sankey-diagram");
+            }
 
             // Initialize Sankey layout
             const sankey = d3.sankey()
@@ -183,8 +179,8 @@ export default {
             });
 
             // First, identify all start nodes
-            const startNodes = nodes.filter(node => 
-                links.some(link => link.source.id === node.id) && 
+            const startNodes = nodes.filter(node =>
+                links.some(link => link.source.id === node.id) &&
                 !links.some(link => link.target.id === node.id)
             );
 
@@ -200,16 +196,16 @@ export default {
                 const newY0 = (index * (startNodeHeight + startNodePadding));
                 const height = node.y1 - node.y0;
                 const yOffset = newY0 - node.y0;
-                
+
                 node.y0 = newY0;
                 node.y1 = newY0 + Math.max(height, startNodeHeight);
             });
 
             // Adjust middle nodes
             nodes.forEach(node => {
-                const isMiddleNode = links.some(link => link.source.id === node.id) && 
-                                   links.some(link => link.target.id === node.id);
-                
+                const isMiddleNode = links.some(link => link.source.id === node.id) &&
+                    links.some(link => link.target.id === node.id);
+
                 if (isMiddleNode) {
                     node.height = 80; // Fixed height for middle nodes
                 }
@@ -242,126 +238,73 @@ export default {
              * @returns {string} SVG path string
              */
             const customLinkPath = (d) => {
-                // Source coordinates
-                const sourceX = d.source.x1;
-                const sourceYStart = d.source.y0;
-                const sourceHeight = d.source.y1 - d.source.y0;
-
-                // Target coordinates
-                const targetX = d.target.x0;
-                const targetYStart = d.target.y0;
-                const targetHeight = d.target.y1 - d.target.y0;
+                const {source, target} = d;
+                const {x1: sourceX, y0: sourceY0, y1: sourceY1} = source;
+                const {x0: targetX, y0: targetY0, y1: targetY1} = target;
 
                 // Find related links
-                const outgoingLinks = links.filter(link => link.source.id === d.source.id);
-                const incomingLinks = links.filter(link => link.target.id === d.target.id);
+                const outgoingLinks = links.filter(l => l.source.id === source.id);
+                const incomingLinks = links.filter(l => l.target.id === target.id);
 
-                // Calculate total flow values
-                const totalIncomingValue = incomingLinks.reduce((sum, link) => sum + link.value, 0);
-                const totalOutgoingValue = outgoingLinks.reduce((sum, link) => sum + link.value, 0);
+                // Calculate positions
+                const sourceY = sourceY0 + ((outgoingLinks.indexOf(d) + 0.5) * (sourceY1 - sourceY0)) / outgoingLinks.length;
+                const targetY = incomingLinks.slice(0, incomingLinks.indexOf(d))
+                        .reduce((sum, link) => sum + (link.value / incomingLinks.reduce((s, l) => s + l.value, 0) * (targetY1 - targetY0)), 0) +
+                    (d.value / (2 * incomingLinks.reduce((s, l) => s + l.value, 0)) * (targetY1 - targetY0)) + targetY0;
 
-                // Scale link heights to fit within node height
-                const scalingFactor = totalIncomingValue > 0 ? targetHeight / totalIncomingValue : 1;
-
-                // Calculate scaled heights for incoming links
-                incomingLinks.forEach(link => {
-                    link.scaledHeight = link.value * scalingFactor;
-                });
-
-                // Calculate link positions
-                const sourceIndex = outgoingLinks.indexOf(d);
-                const targetIndex = incomingLinks.indexOf(d);
-                const sourceSpacing = sourceHeight / Math.max(1, outgoingLinks.length);
-                const targetYOffset = incomingLinks
-                    .slice(0, targetIndex)
-                    .reduce((sum, link) => sum + (link.scaledHeight || 0), 0);
-
-                // Calculate source and target Y positions
-                const sourceY = sourceYStart + (sourceSpacing * sourceIndex) + (sourceSpacing / 2);
-                const targetY = targetYStart + targetYOffset + ((d.scaledHeight || 0) / 2);
-
-                // Calculate curve control points for smooth arcs
-                const curveStartX = targetX - 200; // Start curve 200px before target
-                const curveTightness = 0.3; // Adjust curve tightness
-                const controlX1 = curveStartX;
-                const controlX2 = curveStartX + (100 * curveTightness);
-
-                // For end node connections, ensure the curve doesn't flip
-                if (d.target.id === 'endEvent') {
-                    const midY = (sourceY + targetY) / 2;
-                    return `M ${sourceX},${sourceY}
-                            C ${(sourceX + targetX) / 2},${sourceY}
-                              ${(sourceX + targetX) / 2},${targetY}
-                              ${targetX},${targetY}`;
+                // Handle different link types
+                if (target.id === 'endEvent') {
+                    const midX = (sourceX + targetX) / 2;
+                    return `M ${sourceX},${sourceY} C ${midX},${sourceY} ${midX},${targetY} ${targetX},${targetY}`;
                 }
 
-                // For links from middle nodes, make them go right first
-                const isFromMiddleNode = links.some(link => 
-                    link.source.id === d.source.id && link.target.id === d.target.id &&
-                    links.some(l => l.source.id === link.source.id) && 
-                    links.some(l => l.target.id === link.source.id)
-                );
-
-                if (isFromMiddleNode) {
-                    const midX = sourceX + 100; // Go right 100px first
-                    return `M ${sourceX},${sourceY}
-                            C ${midX},${sourceY}
-                              ${midX},${targetY}
-                              ${targetX},${targetY}`;
+                const isMiddleNode = links.some(l => l.target.id === source.id) && links.some(l => l.source.id === source.id);
+                if (isMiddleNode) {
+                    const midX = sourceX + 100;
+                    return `M ${sourceX},${sourceY} C ${midX},${sourceY} ${midX},${targetY} ${targetX},${targetY}`;
                 }
 
-                // Generate SVG path with Bezier curves for other links
-                return `M ${sourceX},${sourceY}
-                        C ${controlX1},${sourceY}
-                          ${controlX2},${targetY}
-                          ${targetX},${targetY}`;
+                // Default curve for other links
+                const controlX1 = targetX - 200;
+                const controlX2 = controlX1 + 30;
+                return `M ${sourceX},${sourceY} C ${controlX1},${sourceY} ${controlX2},${targetY} ${targetX},${targetY}`;
             }
 
             // Calculate flow metrics for visualization
-            const calculateFlowMetrics = () => {
+            const {maxWarehouseValue, totalWarehouseFlow} = (() => {
                 const warehouseLinks = links.filter(link => !links.some(l => l.target.id === link.source.id));
-                const maxWarehouseValue = warehouseLinks.length ? Math.max(...warehouseLinks.map(link => link.value)) : 0;
-                const totalWarehouseFlow = warehouseLinks.reduce((sum, link) => sum + link.value, 0);
-
-                // Debug logging
-                console.debug("Flow metrics:", {maxWarehouseValue, totalWarehouseFlow});
-
-                return {maxWarehouseValue, totalWarehouseFlow};
-            };
-
-            const {maxWarehouseValue, totalWarehouseFlow} = calculateFlowMetrics();
-
+                const maxValue = warehouseLinks.length ? Math.max(...warehouseLinks.map(l => l.value)) : 0;
+                const totalFlow = warehouseLinks.reduce((sum, link) => sum + link.value, 0);
+                console.debug("Flow metrics:", {maxValue, totalFlow});
+                return {maxWarehouseValue: maxValue, totalWarehouseFlow: totalFlow};
+            })();
 
             /**
-             * Calculates the width of a link based on its value and context
-             * @param {Object} link - The link data object
-             * @returns {number} The calculated width in pixels
+             * Calculates link width based on flow value and context
+             * @param {Object} link - Link data object
+             * @returns {number} Calculated width in pixels
              */
             const calculateLinkWidth = (link) => {
                 const maxAllowed = link.target.y1 - link.target.y0;
                 const isWarehouse = !links.some(l => l.target.id === link.source.id);
 
-                let computedWidth;
+                const computedWidth = isWarehouse
+                    ? (link.value / maxWarehouseValue) * ((maxWarehouseValue / totalWarehouseFlow) * 100)
+                    : link.value * (maxAllowed / links.filter(l => l.target.id === link.target.id)
+                    .reduce((sum, l) => sum + l.value, 0));
 
-                if (isWarehouse) {
-                    // Scale warehouse links based on their proportion of total flow
-                    const proportion = maxWarehouseValue > 0 ? (link.value / maxWarehouseValue) : 0;
-                    computedWidth = proportion * ((maxWarehouseValue / totalWarehouseFlow) * 100);
-                } else {
-                    // Scale process links based on their proportion of incoming flow
-                    const incomingLinks = links.filter(l => l.target.id === link.target.id);
-                    const totalIncomingValue = incomingLinks.reduce((sum, l) => sum + l.value, 0);
-                    const scalingFactor = totalIncomingValue > 0 ? maxAllowed / totalIncomingValue : 1;
-                    computedWidth = link.value * scalingFactor;
-                }
-
-                // Apply minimum and maximum width constraints
-                return Math.max(PLUGIN_CONFIG.STYLES.link.minStrokeWidth, Math.min(computedWidth, maxAllowed));
+                return Math.max(PLUGIN_CONFIG.STYLES.link.minStrokeWidth,
+                    Math.min(computedWidth, maxAllowed));
             };
 
-            // Draw the link paths
-            const linkPaths = g.append("g")
-                .selectAll("path")
+            // Draw link paths
+            if (!g.node()) {
+                console.error("SVG group not properly initialized");
+                return;
+            }
+
+            const linkGroup = g.append("g");
+            const linkPaths = linkGroup.selectAll("path")
                 .data(links)
                 .enter()
                 .append("path")
@@ -372,70 +315,45 @@ export default {
                 .style("stroke-opacity", PLUGIN_CONFIG.STYLES.link.strokeOpacity)
                 .style("stroke-width", calculateLinkWidth);
 
-            nodes.forEach(node => {
-                const isMiddleNode = links.some(link => link.source.id === node.id) && links.some(link => link.target.id === node.id);
-                console.info(`Node "${node.id}" is a task:`, isMiddleNode);
-            });
+            // Render nodes
+            const nodeGroup = g.append("g");
+            nodeGroup.selectAll("rect")
+                .data(nodes)
+                .enter()
+                .append("rect")
+                .attr("x", d => d.x0)
+                .attr("y", d => d.y0)
+                .attr("height", d => d.y1 - d.y0)
+                .attr("width", d => d.x1 - d.x0)
+                .style("fill", d => taskPositions.some(t => t.id === d.id) ? "none" : d.color)
+                .style("stroke", d => taskPositions.some(t => t.id === d.id) ? "none" : "black");
 
-
-            /**
-             * Renders the nodes of the Sankey diagram
-             */
-            const renderNodes = () => {
-                g.append("g")
-                    .selectAll("rect")
-                    .data(nodes)
-                    .enter()
-                    .append("rect")
-                    .attr("x", d => d.x0)
-                    .attr("y", d => d.y0)
-                    .attr("height", d => d.y1 - d.y0)
-                    .attr("width", d => d.x1 - d.x0)
-                    .style("fill", d => {
-                        const isMiddleNode = taskPositions.some(task => task.id === d.id);
-                        return isMiddleNode ? "none" : d.color; // Hide middle nodes
-                    })
-                    .style("stroke", d => {
-                        const isMiddleNode = taskPositions.some(task => task.id === d.id);
-                        return isMiddleNode ? "none" : "black";
-                    });
-            };
-
-            // Render all nodes
-            renderNodes();
-
-            // Add link labels with matching colors and units
+            // Add link tooltips
             linkPaths.append("title")
-                .text(d => {
-                    `${d.source.name} → ${d.target.name}\n${d.material}: ${d.value} ${d.unit || 'unit'}${d.value !== 1 ? 's' : ''}`
-                });
+                .text(d => `${d.source.name} → ${d.target.name}\n${d.material}: ${d.value} ${d.unit || 'unit'}${d.value !== 1 ? 's' : ''}`);
 
-            // Add text paths at the beginning of each link
-            const linkTexts = g.append("g")
-                .selectAll("text")
+            // Add link labels
+            const textGroup = g.append("g");
+            textGroup.selectAll("text")
                 .data(links)
                 .enter()
                 .append("text")
                 .style("font-size", "16px")
                 .style("font-weight", "bolder")
-                .style("fill", d => d3.color(d.source.color).darker(1)) // Match source node color
+                .style("fill", d => d3.color(d.source.color).darker(1))
                 .append("textPath")
-                .attr("href", (d, i) => `#linkPath${i}`)
-                .attr("startOffset", "2")  // Position at the start
-                .style("text-anchor", "start")  // Align text to start
+                .attr("href", (_, i) => `#linkPath${i}`)
+                .attr("startOffset", "2")
+                .attr("dy", "0.35em")
+                .style("text-anchor", "start")
                 .style("dominant-baseline", "middle")
                 .style("paint-order", "stroke")
                 .style("stroke", "white")
                 .style("stroke-width", 2)
-                .attr("dy", "0.35em")  // Vertical alignment
-                .text(d => {
-                    return `${d.material}: ${d.value} ${d.unit || 'unit'}${d.value !== 1 ? 's' : ''}`;
-                });
+                .text(d => `${d.material}: ${d.value} ${d.unit || 'unit'}${d.value !== 1 ? 's' : ''}`);
 
-            // Bring all rectangles to front
+            // Ensure nodes are rendered above links
             d3.selectAll(".sankey-diagram rect").raise();
-
-            console.info("Sankey diagram rendered successfully!");
         }
     }
 };
