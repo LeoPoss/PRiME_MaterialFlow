@@ -36,9 +36,9 @@ class SankeyService(private val modelService: ModelService, private val material
 
         // Combine material nodes with finished product and nodes for tasks (middle nodes)
         val nodes = materialNodes +
-                SankeyNode("FinishedGood", "endEvent") +
+                SankeyNode("Finished Good", "endEvent", "endEvent") +
                 taskOrder.map { taskId ->
-                    SankeyNode("", taskId)
+                    SankeyNode("", taskId, "task")
                 }
 
         // add flows
@@ -66,12 +66,12 @@ class SankeyService(private val modelService: ModelService, private val material
         val lastMaterialConsumingTask = findLastMaterialConsumingTask(taskOrder, listTaskRequirements)
         if (lastMaterialConsumingTask != null) {
             links += SankeyLink(
-                material = "FinishedGood", source = lastMaterialConsumingTask, target = "endEvent", value = 1
+                material = "Finished Good", source = lastMaterialConsumingTask, target = "endEvent", value = 1
             )
         }
 
         return SankeyData(
-            nodes = nodes,
+            nodes = nodes.sortedBy { it.type },
             links = links,
         )
     }

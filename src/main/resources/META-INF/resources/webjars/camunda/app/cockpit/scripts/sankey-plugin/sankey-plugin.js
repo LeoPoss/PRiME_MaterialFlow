@@ -1,14 +1,12 @@
 const PLUGIN_CONFIG = {
-    id: "sankeyOverlay", 
-    pluginPoint: "cockpit.processDefinition.diagram.plugin", 
+    id: "sankeyOverlay",
+    pluginPoint: "cockpit.processDefinition.diagram.plugin",
     priority: 0,
     TASK_TYPES: ["bpmn:Task", "bpmn:ManualTask", "bpmn:UserTask", "bpmn:ServiceTask", "bpmn:ScriptTask", "bpmn:BusinessRuleTask"],
-    
+
     CSS_VARIABLES: {
         text: {
-            task: 'var(--sankey-task)',
-            finished: 'var(--sankey-finished)',
-            default: 'var(--sankey-default)',
+            default: 'var(--sankey-text-default)',
             materials: [
                 'var(--sankey-text-1)',
                 'var(--sankey-text-2)',
@@ -20,6 +18,7 @@ const PLUGIN_CONFIG = {
             ]
         },
         link: {
+            default: 'var(--sankey-link-default)',
             materials: [
                 'var(--sankey-material-1)',
                 'var(--sankey-material-2)',
@@ -31,7 +30,7 @@ const PLUGIN_CONFIG = {
             ]
         }
     },
-    
+
     STYLES: {
         container: {
             position: "absolute",
@@ -78,7 +77,7 @@ export default {
         // Calculate dimensions and positions
         const imgWidth = rootBBox.width;
         const imgHeight = (tasks.length * 60);
-        const containerHeight = imgHeight + rootBBox.height + 100; // Add extra 50px for the top nodes
+        const containerHeight = imgHeight + rootBBox.height + 200;
         const top = rootBBox.y - imgHeight;
         const left = rootBBox.x;
 
@@ -100,7 +99,7 @@ export default {
         console.debug("Mapped BPMN task positions:", taskPositions);
 
         /**
-         * Creates the SVG container for the Sankey diagram 
+         * Creates the SVG container for the Sankey diagram
          */
         const createSankeyContainer = () => {
             const container = document.createElement("div");
@@ -176,10 +175,6 @@ export default {
 
         /**
          * Renders the Sankey diagram with the provided data
-         * @param {HTMLElement} container - The container element
-         * @param {number} imgWidth - Width of the diagram
-         * @param {number} imgHeight - Height of the diagram
-         * @param {Object} sankeyData - Data for the Sankey diagram
          */
         const renderSankey = (container, imgWidth, imgHeight, sankeyData) => {
             d3.select(".sankey-diagram").selectAll("*").remove();
@@ -202,53 +197,34 @@ export default {
                 .nodeWidth(15)
                 .nodePadding(10)
                 .size([imgWidth, imgHeight])
-                .linkSort((a, b) => {
-                    // Skip sorting if either source type is null
-                    if (!a.source.type && !b.source.type) return 0;
-                    if (!a.source.type) return 1; // Put nodes with null type at the end
-                    if (!b.source.type) return -1; // Put nodes with null type at the end
-                    
-                    // Sort alphabetically by type
-                    return a.source.type.localeCompare(b.source.type);
-                });
+                .nodeSort(null);
 
             // Process nodes and links
             const {nodes, links} = sankey({
                 nodes: sankeyData.nodes.map(node => {
-                    // Set node type and initial color (text color)
                     const type = node.type || 'default';
-                    let color;
-                    
-                    if (type === 'task') {
-                        color = PLUGIN_CONFIG.CSS_VARIABLES.text.task;
-                    } else {
-                        color = PLUGIN_CONFIG.CSS_VARIABLES.text.default;
-                    }
-                    
                     return {
                         ...node,
                         type: type,
-                        color: color,
-                        textColor: color // Store text color separately
+                        color: PLUGIN_CONFIG.CSS_VARIABLES.link.default,
+                        textColor: type === 'task' ? "none" : PLUGIN_CONFIG.CSS_VARIABLES.text.default
                     };
                 }),
                 links: sankeyData.links.map(link => ({
                     ...link
                 }))
             });
-            
+
             // Assign material colors to material types
             const materialTypes = [...new Set(nodes
-                .filter(node => !['task', 'finished', 'default'].includes(node.type))
+                .filter(node => !['task', 'endEvent'].includes(node.type))
                 .map(node => node.type))];
-                
+
             materialTypes.forEach((type, index) => {
                 const colorIndex = index % PLUGIN_CONFIG.CSS_VARIABLES.link.materials.length;
                 nodes.forEach(node => {
                     if (node.type === type) {
-                        // Use 500 variant for node fill/text
                         node.textColor = PLUGIN_CONFIG.CSS_VARIABLES.text.materials[colorIndex];
-                        // Use 300 variant for links
                         node.color = PLUGIN_CONFIG.CSS_VARIABLES.link.materials[colorIndex];
                     }
                 });
@@ -262,20 +238,6 @@ export default {
 
             // Sort start nodes by their original Y position
             startNodes.sort((a, b) => a.y0 - b.y0);
-
-            // Calculate total height needed for start nodes
-            const startNodeHeight = 20; // Fixed height for start nodes
-            const startNodePadding = 20; // Padding between start nodes
-
-            // Position start nodes in a vertical stack at the top
-            startNodes.forEach((node, index) => {
-                const newY0 = (index * (startNodeHeight + startNodePadding));
-                const height = node.y1 - node.y0;
-                const yOffset = newY0 - node.y0;
-
-                node.y0 = newY0;
-                node.y1 = newY0 + Math.max(height, startNodeHeight);
-            });
 
             // Adjust middle nodes
             nodes.forEach(node => {
@@ -403,13 +365,9 @@ export default {
                 .attr("y", d => d.y0)
                 .attr("height", d => d.y1 - d.y0)
                 .attr("width", d => d.x1 - d.x0)
-                .attr("class", d => `sankey-node ${d.type}`)
-                .style("fill", d => taskPositions.some(t => t.id === d.id) ? "none" : d.color)
-                .style("stroke", d => taskPositions.some(t => t.id === d.id) ? "none" : "black");
-
-            // Add link tooltips
-            linkPaths.append("title")
-                .text(d => `${d.source.name} → ${d.target.name}\n${d.material}: ${d.value} ${d.unit || 'unit'}${d.value !== 1 ? 's' : ''}`);
+                .attr("class", d => `sankey-node ${d.type.toLowerCase()}`)
+                .style("fill", d => d.textColor)
+                .style("stroke", "none");
 
             // Add link labels
             const textGroup = g.append("g").attr('class', 'sankey-labels');
@@ -420,8 +378,7 @@ export default {
                 .attr("class", "sankey-label")
                 .style("font-size", "16px")
                 .style("font-weight", "bolder")
-                .each(function(d) {
-                    // Add white stroke for better readability
+                .each(function (d) {
                     d3.select(this)
                         .style("paint-order", "stroke")
                         .style("stroke", "white")
@@ -435,7 +392,7 @@ export default {
                 .attr("dy", "0.35em")
                 .style("text-anchor", "start")
                 .style("dominant-baseline", "middle")
-                .style("fill", d => d.source.textColor) // Use text color (500 variant)
+                .style("fill", d => d.source.type === "task" ? PLUGIN_CONFIG.CSS_VARIABLES.text.default : d.source.textColor)
                 .text(d => `${d.value} ${d.unit || '×'} ${d.material}`);
 
             // Ensure nodes are rendered above links
