@@ -47,8 +47,8 @@ export default {
 
         // Calculate dimensions and positions
         const imgWidth = rootBBox.width;
-        const imgHeight = (tasks.length * 40);
-        const containerHeight = imgHeight + rootBBox.height;
+        const imgHeight = (tasks.length * 60);
+        const containerHeight = imgHeight + rootBBox.height + 100; // Add extra 50px for the top nodes
         const top = rootBBox.y - imgHeight;
         const left = rootBBox.x;
 
@@ -133,7 +133,7 @@ export default {
                 }
                 const sankeyData = await response.json();
 
-                // Validate the data
+                // "Validate" the data
                 if (!sankeyData?.nodes?.length || !sankeyData?.links?.length) {
                     console.error("Invalid Sankey data: missing nodes or links");
                     return;
@@ -165,24 +165,51 @@ export default {
                 .nodeId(d => d.id)
                 .nodeWidth(15)
                 .nodePadding(10)
-                .size([imgWidth, imgHeight]);
+                .size([imgWidth, imgHeight])
+                .linkSort((a, b) => {
+                    // Group source nodes by type via color
+                    const colorA = a.source.color || "#000000";
+                    const colorB = b.source.color || "#000000";
+                    return d3.descending(colorB, colorA);
+                });
 
             // Process nodes and links
             const {nodes, links} = sankey({
                 nodes: sankeyData.nodes.map(node => ({
-                    ...node,
+                    ...node
                 })), links: sankeyData.links.map(link => ({
-                    source: link.source,
-                    target: link.target,
-                    value: link.value,
-                    material: link.material,
-                    unit: link.unit
+                    ...link
                 }))
             });
 
-            // Adjust node heights for better visualization
+            // First, identify all start nodes
+            const startNodes = nodes.filter(node => 
+                links.some(link => link.source.id === node.id) && 
+                !links.some(link => link.target.id === node.id)
+            );
+
+            // Sort start nodes by their original Y position
+            startNodes.sort((a, b) => a.y0 - b.y0);
+
+            // Calculate total height needed for start nodes
+            const startNodeHeight = 20; // Fixed height for start nodes
+            const startNodePadding = 20; // Padding between start nodes
+
+            // Position start nodes in a vertical stack at the top
+            startNodes.forEach((node, index) => {
+                const newY0 = (index * (startNodeHeight + startNodePadding));
+                const height = node.y1 - node.y0;
+                const yOffset = newY0 - node.y0;
+                
+                node.y0 = newY0;
+                node.y1 = newY0 + Math.max(height, startNodeHeight);
+            });
+
+            // Adjust middle nodes
             nodes.forEach(node => {
-                const isMiddleNode = links.some(link => link.source.id === node.id) && links.some(link => link.target.id === node.id);
+                const isMiddleNode = links.some(link => link.source.id === node.id) && 
+                                   links.some(link => link.target.id === node.id);
+                
                 if (isMiddleNode) {
                     node.height = 80; // Fixed height for middle nodes
                 }
@@ -257,9 +284,18 @@ export default {
                 const curveStartX = targetX - 200; // Start curve 200px before target
                 const curveTightness = 0.3; // Adjust curve tightness
                 const controlX1 = curveStartX;
-                const controlX2 = curveStartX + (200 * curveTightness);
+                const controlX2 = curveStartX + (100 * curveTightness);
 
-                // Generate SVG path with Bezier curves
+                // For end node connections, ensure the curve doesn't flip
+                if (d.target.id === 'endEvent') {
+                    const midY = (sourceY + targetY) / 2;
+                    return `M ${sourceX},${sourceY}
+                            C ${(sourceX + targetX) / 2},${sourceY}
+                              ${(sourceX + targetX) / 2},${targetY}
+                              ${targetX},${targetY}`;
+                }
+
+                // Generate SVG path with Bezier curves for other links
                 return `M ${sourceX},${sourceY}
                         C ${controlX1},${sourceY}
                           ${controlX2},${targetY}
@@ -317,7 +353,7 @@ export default {
                 .attr("d", customLinkPath)
                 .attr("id", (_, i) => `linkPath${i}`)
                 .style("fill", "none")
-                .style("stroke", d => d3.color(d.source.color).darker(1))
+                .style("stroke", d => d.source.color)
                 .style("stroke-opacity", PLUGIN_CONFIG.STYLES.link.strokeOpacity)
                 .style("stroke-width", calculateLinkWidth);
 
@@ -367,7 +403,7 @@ export default {
                 .append("text")
                 .style("font-size", "16px")
                 .style("font-weight", "bolder")
-                .style("fill", d => d.source.color) // Match source node color
+                .style("fill", d => d3.color(d.source.color).darker(1)) // Match source node color
                 .append("textPath")
                 .attr("href", (d, i) => `#linkPath${i}`)
                 .attr("startOffset", "2")  // Position at the start
@@ -376,36 +412,15 @@ export default {
                 .style("paint-order", "stroke")
                 .style("stroke", "white")
                 .style("stroke-width", 2)
-                .style("stroke-linejoin", "round")
                 .attr("dy", "0.35em")  // Vertical alignment
                 .text(d => {
                     return `${d.material}: ${d.value} ${d.unit || 'unit'}${d.value !== 1 ? 's' : ''}`;
                 });
 
-            // Add node labels (only for middle nodes)
-            const nodeLabels = g.append("g")
-                .selectAll("text")
-                .data(nodes)
-                .enter()
-                .append("text")
-                .filter(d => {
-                    // Only show labels for nodes that are neither start nor end nodes
-                    const isStartNode = !links.some(link => link.target.id === d.id);
-                    const isEndNode = !links.some(link => link.source.id === d.id);
-                    return !(isStartNode || isEndNode);
-                })
-                .attr("x", d => d.x0 - 5) // Position to the left of the node
-                .attr("y", d => (d.y0 + d.y1) / 2)
-                .attr("dy", "0.35em")
-                .attr("text-anchor", "end")
-                .text(d => d.name)
-                .style("font-size", PLUGIN_CONFIG.STYLES.nodeLabel.fontSize);
-
             // Bring all rectangles to front
             d3.selectAll(".sankey-diagram rect").raise();
 
-            console.debug("Sankey diagram rendered successfully!");
-
+            console.info("Sankey diagram rendered successfully!");
         }
     }
 };
