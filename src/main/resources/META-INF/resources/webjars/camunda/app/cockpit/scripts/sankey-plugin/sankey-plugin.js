@@ -295,6 +295,21 @@ export default {
                               ${targetX},${targetY}`;
                 }
 
+                // For links from middle nodes, make them go right first
+                const isFromMiddleNode = links.some(link => 
+                    link.source.id === d.source.id && link.target.id === d.target.id &&
+                    links.some(l => l.source.id === link.source.id) && 
+                    links.some(l => l.target.id === link.source.id)
+                );
+
+                if (isFromMiddleNode) {
+                    const midX = sourceX + 100; // Go right 100px first
+                    return `M ${sourceX},${sourceY}
+                            C ${midX},${sourceY}
+                              ${midX},${targetY}
+                              ${targetX},${targetY}`;
+                }
+
                 // Generate SVG path with Bezier curves for other links
                 return `M ${sourceX},${sourceY}
                         C ${controlX1},${sourceY}

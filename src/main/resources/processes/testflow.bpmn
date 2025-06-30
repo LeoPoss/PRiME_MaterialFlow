@@ -30,7 +30,7 @@
     <bpmn:dataObjectReference id="materialRequirementCollection" name="Resource Requirement Collection" dataObjectRef="DataObject_00nryeg">
       <bpmn:extensionElements />
     </bpmn:dataObjectReference>
-    <bpmn:dataObject id="DataObject_00nryeg" />
+    <bpmn:dataObject id="DataObject_00nryeg" isCollection="true" />
     <bpmn:userTask id="mountWoodenSlatsToTableTop" name="Mount&#10;Wooden Slats to Tabletop">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_0xngy7i</bpmn:incoming>
@@ -121,6 +121,18 @@
           <dc:Bounds x="379" y="256" width="63" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1sxptoh_di" bpmnElement="Association_2">
+        <di:waypoint x="932" y="180" />
+        <di:waypoint x="922" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_08g7xme_di" bpmnElement="Association_1">
+        <di:waypoint x="642" y="180" />
+        <di:waypoint x="633" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_056p4q6_di" bpmnElement="Association_3">
+        <di:waypoint x="1205" y="180" />
+        <di:waypoint x="1199" y="160" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_05rfgqx_di" bpmnElement="MaterialRequirementAnnotation2">
         <dc:Bounds x="900" y="180" width="269" height="127" />
         <bpmndi:BPMNLabel />
@@ -141,6 +153,14 @@
         <di:waypoint x="380" y="120" />
         <di:waypoint x="564" y="120" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_0bcq7pg_di" bpmnElement="DataOutputAssociation_0bcq7pg">
+        <di:waypoint x="361" y="160" />
+        <di:waypoint x="392" y="199" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mnkpmi_di" bpmnElement="Flow_1mnkpmi">
+        <di:waypoint x="1238" y="120" />
+        <di:waypoint x="1322" y="120" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0gwoq6o_di" bpmnElement="Flow_0gwoq6o">
         <di:waypoint x="664" y="120" />
         <di:waypoint x="853" y="120" />
@@ -148,26 +168,6 @@
       <bpmndi:BPMNEdge id="Flow_0f3u8dr_di" bpmnElement="Flow_0f3u8dr">
         <di:waypoint x="953" y="120" />
         <di:waypoint x="1138" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1mnkpmi_di" bpmnElement="Flow_1mnkpmi">
-        <di:waypoint x="1238" y="120" />
-        <di:waypoint x="1322" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_08g7xme_di" bpmnElement="Association_1">
-        <di:waypoint x="642" y="180" />
-        <di:waypoint x="633" y="160" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1sxptoh_di" bpmnElement="Association_2">
-        <di:waypoint x="932" y="180" />
-        <di:waypoint x="922" y="160" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_056p4q6_di" bpmnElement="Association_3">
-        <di:waypoint x="1205" y="180" />
-        <di:waypoint x="1199" y="160" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="DataOutputAssociation_0bcq7pg_di" bpmnElement="DataOutputAssociation_0bcq7pg">
-        <di:waypoint x="361" y="160" />
-        <di:waypoint x="392" y="199" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
