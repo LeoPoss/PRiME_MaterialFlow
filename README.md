@@ -93,7 +93,7 @@ src/
 │   │
 │   ├── resources/
 │   │   ├── processes/
-│   │   │   └── testflow.bpmn     # Example BPMN process with material annotations
+│   │   │   └── MaterialFlow.bpmn     # Example BPMN process with material annotations
 │   │   └── META-INF/resources/webjars/camunda/app/cockpit/scripts/
 │   │       └── sankey-plugin/    # Contains frontend plugin including package.json and node_modules that are included in the repository
 │   │           └── sankey-plugin.js  # D3.js based Sankey diagram implementation

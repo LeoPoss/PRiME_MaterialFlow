@@ -30,12 +30,12 @@ class MaterialService {
     /**
      * Extracts material requirements from the BPMN file.
      */
-    fun extractMaterialRequirements(): List<TaskMaterialRequirements> {
-        val xmlFilePath = "src/main/resources/processes/testflow.bpmn"
+    fun extractMaterialRequirements(bpmnPath: String): List<TaskMaterialRequirements> {
+        //val xmlFilePath = "src/main/resources/processes/MaterialFlow.bpmn"
         val taskRequirements = mutableListOf<TaskMaterialRequirements>()
 
         try {
-            val xmlFile = File(xmlFilePath)
+            val xmlFile = File(bpmnPath)
             val factory = DocumentBuilderFactory.newInstance().apply {
                 isNamespaceAware = true
             }

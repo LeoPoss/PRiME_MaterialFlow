@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service
 @Service
 class ModelService {
 
-    fun loadTaskOrder(): List<String> {
-        val xmlFilePath = "src/main/resources/processes/testflow.bpmn"
-        return BpmnProcessor(xmlFilePath).loadTaskOrder()
+    fun loadTaskOrder(bpmnPath: String): List<String> {
+//        val xmlFilePath = "src/main/resources/processes/MaterialFlow.bpmn"
+        return BpmnProcessor(bpmnPath).loadTaskOrder()
     }
 }

@@ -4,17 +4,21 @@ import de.ur.operational.model.SankeyData
 import de.ur.operational.model.SankeyLink
 import de.ur.operational.model.SankeyNode
 import de.ur.operational.model.TaskMaterialRequirements
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 class SankeyService(private val modelService: ModelService, private val materialService: MaterialService) {
     /**
      * Generates sankey diagram data based on the task order and material requirements.
      */
-    fun generateSankeyData(): SankeyData {
-        val taskOrder = modelService.loadTaskOrder()
+    fun generateSankeyData(bpmnPath: String): SankeyData {
 
-        val listTaskRequirements = materialService.extractMaterialRequirements()
+        val taskOrder = modelService.loadTaskOrder(bpmnPath)
+
+        val listTaskRequirements = materialService.extractMaterialRequirements(bpmnPath)
 
         val (intermediateMaterialRequirements, materialRequirements) =
             listTaskRequirements.flatMap { it.requirements }
@@ -23,8 +27,6 @@ class SankeyService(private val modelService: ModelService, private val material
                 .let { (intermediates, others) ->
                     intermediates.map { it.first }.distinct() to others.map { it.first }.distinct()
                 }
-
-        // No need for color mapping in the backend anymore
 
         // collect all material Nodes
         val materialNodes = materialRequirements.map { materialName ->
