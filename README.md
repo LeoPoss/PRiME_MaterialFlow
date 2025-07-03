@@ -4,7 +4,7 @@ A Camunda plugin for visualizing material flows in business processes, part of P
 
 ## Overview
 
-![screen1.png](screen1.png)
+![flownew.png](flownew.png)
 
 PRiME Material Flow is a visualization tool that bridges the gap between digital process models and physical resource orchestration in Business Process Management (BPM). It extends Camunda's capabilities to provide:
 

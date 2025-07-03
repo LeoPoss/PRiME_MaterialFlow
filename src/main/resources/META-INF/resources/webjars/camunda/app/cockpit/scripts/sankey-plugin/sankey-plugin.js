@@ -59,15 +59,15 @@ export default {
         window.camundaViewer = viewer;
         console.log("Sankey Overlay Plugin loaded!");
 
-        // Initialize Camunda services
         const overlays = viewer.get("overlays");
         const canvas = viewer.get("canvas");
         const elementRegistry = viewer.get("elementRegistry");
         const rootElement = canvas.getRootElement();
         const rootBBox = canvas.getGraphics(rootElement).getBBox();
 
-        // Find all BPMN tasks
         const tasks = elementRegistry.filter(el => PLUGIN_CONFIG.TASK_TYPES.includes(el.type));
+        const textAnnotations = elementRegistry.filter(el => el.type === 'bpmn:TextAnnotation' && el.id.toLowerCase().includes('resourcerequirementannotation'));
+        const dataObjectRefs = elementRegistry.filter(el => el.type === 'bpmn:DataObjectReference' && el.id.toLowerCase().includes('resourcerequirementcollection'));
 
         if (!tasks.length) {
             console.error("Error: No BPMN tasks found in the diagram!");
@@ -120,8 +120,65 @@ export default {
         const container = createSankeyContainer();
 
         // Add overlay to the diagram
-        overlays.add(rootElement.id, {position: {top, left}, html: container});
-        console.debug("Sankey overlay positioned at:", {top, left, imgWidth, containerHeight});
+        overlays.add(rootElement.id, { position: { top, left }, html: container });
+        console.debug("Sankey overlay positioned at:", { top, left, imgWidth, containerHeight });
+
+        // Add Resource Requirement Annotation Icon
+        textAnnotations.forEach(annotation => {
+            const iconSize = 24;
+            const x = annotation.x - rootBBox.x - iconSize - 4;
+            const y = annotation.y - rootBBox.y + imgHeight;
+
+            const svgIcon = document.createElement('div');
+            svgIcon.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                     width="${iconSize}px" 
+                     height="${iconSize}px" 
+                     viewBox="0 0 24.78 27.53"
+                     style="position: absolute; left: ${x}px; top: ${y}px; pointer-events: none; z-index: 1001;">
+                    <path d="M200-120c-22 0-40.83-7.83-56.5-23.5C127.83-159.17 120-178 120-200v-560c0-22 7.83-40.83 23.5-56.5C159.17-832.17 178-840 200-840h168c8.67-24 23.17-43.33 43.5-58 20.33-14.67 43.17-22 68.5-22s48.17 7.33 68.5 22 34.83 34 43.5 58h168c22 0 40.83 7.83 56.5 23.5C832.17-800.83 840-782 840-760v560c0 22-7.83 40.83-23.5 56.5C800.83-127.83 782-120 760-120zm280-670c8.67 0 15.83-2.83 21.5-8.5s8.5-12.83 8.5-21.5-2.83-15.83-8.5-21.5-12.83-8.5-21.5-8.5-15.83 2.83-21.5 8.5-8.5 12.83-8.5 21.5 2.83 15.83 8.5 21.5 12.83 8.5 21.5 8.5z" style="fill-rule:nonzero" transform="matrix(.03441 0 0 .03441 -4.13 31.66)"/>
+                    <g style="fill:#fff;fill-opacity:1">
+                        <path d="M200-160v50c0 11.33-3.83 20.83-11.5 28.5C180.83-73.83 171.33-70 160-70h-40c-11.33 0-20.83-3.83-28.5-11.5C83.83-89.17 80-98.67 80-110v-90c0-11.33 3.83-20.83 11.5-28.5 7.67-7.67 17.17-11.5 28.5-11.5h720c11.33 0 20.83 3.83 28.5 11.5 7.67 7.67 11.5 17.17 11.5 28.5v90c0 11.33-3.83 20.83-11.5 28.5C860.83-73.83 851.33-70 840-70h-40c-11.33 0-20.83-3.83-28.5-11.5-7.67-7.67-11.5-17.17-11.5-28.5v-50H540v50c0 11.33-3.83 20.83-11.5 28.5C520.83-73.83 511.33-70 500-70h-40c-11.33 0-20.83-3.83-28.5-11.5-7.67-7.67-11.5-17.17-11.5-28.5v-50zm40-160c-11.33 0-20.83-3.83-28.5-11.5-7.67-7.67-11.5-17.17-11.5-28.5v-480c0-11.33 3.83-20.83 11.5-28.5 7.67-7.67 17.17-11.5 28.5-11.5h480c11.33 0 20.83 3.83 28.5 11.5 7.67 7.67 11.5 17.17 11.5 28.5v480c0 11.33-3.83 20.83-11.5 28.5-7.67 7.67-17.17 11.5-28.5 11.5zm320-320c11.33 0 20.83-3.83 28.5-11.5 7.67-7.67 11.5-17.17 11.5-28.5 0-11.33-3.83-20.83-11.5-28.5-7.67-7.67-17.17-11.5-28.5-11.5H400c-11.33 0-20.83 3.83-28.5 11.5-7.67 7.67-11.5 17.17-11.5 28.5 0 11.33 3.83 20.83 11.5 28.5 7.67 7.67 17.17 11.5 28.5 11.5z" style="fill:#fff;fill-opacity:1;fill-rule:nonzero" transform="translate(11.23 26.82) scale(.01378)"/>
+                    </g>
+                    <g style="fill:#fff;fill-opacity:1">
+                        <path d="M714-162 537-339l84-84 177 177c11.33 11.33 17 25.33 17 42s-5.67 30.67-17 42c-11.33 11.33-25.33 17-42 17s-30.67-5.67-42-17zm-552 0c-11.33-11.33-17-25.33-17-42s5.67-30.67 17-42l234-234-68-68c-7.33 7.33-16.67 11-28 11-11.33 0-20.67-3.67-28-11l-23-23v90c0 9.33-4 15.67-12 19s-15.33 1.67-22-5L106-576c-6.67-6.67-8.33-14-5-22s9.67-12 19-12h90l-22-22c-8-8-12-17.33-12-28 0-10.67 4-20 12-28l114-114c13.33-13.33 27.67-23 43-29 15.33-6 31-9 47-9 13.33 0 25.83 2 37.5 6 11.67 4 23.17 10 34.5 18 5.33 3.33 8.17 8 8.5 14 .33 6-1.83 11.33-6.5 16l-76 76 22 22c7.33 7.33 11 16.67 11 28 0 11.33-3.67 20.67-11 28l68 68 90-90c-2.67-7.33-4.83-15-6.5-23s-2.5-16-2.5-24c0-39.33 13.5-72.5 40.5-99.5S661.67-841 701-841c5.33 0 10.33.17 15 .5 4.67.33 9.33 1.17 14 2.5 6 2 9.83 6.17 11.5 12.5s.17 11.83-4.5 16.5l-65 65c-4 4-6 8.67-6 14s2 10 6 14l44 44c4 4 8.67 6 14 6s10-2 14-6l65-65c4.67-4.67 10.17-6.33 16.5-5s10.5 5.33 12.5 12a68.66 68.66 0 0 1 2.5 14c.33 4.67.5 9.67.5 15 0 39.33-13.5 72.5-40.5 99.5S740.33-561 701-561c-8 0-16-.67-24-2a91.81 91.81 0 0 1-23-7L246-162c-11.33 11.33-25.33 17-42 17s-30.67-5.67-42-17z" style="fill:#fff;fill-opacity:1;fill-rule:nonzero" transform="translate(.14 16.5) scale(.01378)"/>
+                    </g>
+                </svg>
+            `;
+
+            container.appendChild(svgIcon);
+            console.debug(`Added SVG icon for TextAnnotation at (${annotation.x}, ${annotation.y})`);
+        });
+
+        // Add Resource Requirement Collection Icon
+        dataObjectRefs.forEach(ref => {
+            const { x, y, width, height } = ref;
+            const iconSize = 24;
+            const iconX = x - rootBBox.x + (width - iconSize) / 2;
+            const iconY = y - rootBBox.y + imgHeight - 6 + (height - iconSize) / 2;
+
+            const svgIcon = document.createElement('div');
+            svgIcon.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                     width="${iconSize}px" 
+                     height="${iconSize}px" 
+                     viewBox="0 0 24.78 27.53"
+                     style="position: absolute; left: ${iconX}px; top: ${iconY}px; pointer-events: none; z-index: 1001;">
+                    <path d="M200-120c-22 0-40.83-7.83-56.5-23.5C127.83-159.17 120-178 120-200v-560c0-22 7.83-40.83 23.5-56.5C159.17-832.17 178-840 200-840h168c8.67-24 23.17-43.33 43.5-58 20.33-14.67 43.17-22 68.5-22s48.17 7.33 68.5 22 34.83 34 43.5 58h168c22 0 40.83 7.83 56.5 23.5C832.17-800.83 840-782 840-760v560c0 22-7.83 40.83-23.5 56.5C800.83-127.83 782-120 760-120zm280-670c8.67 0 15.83-2.83 21.5-8.5s8.5-12.83 8.5-21.5-2.83-15.83-8.5-21.5-12.83-8.5-21.5-8.5-15.83 2.83-21.5 8.5-8.5 12.83-8.5 21.5 2.83 15.83 8.5 21.5 12.83 8.5 21.5 8.5z" style="fill-rule:nonzero" transform="matrix(.03441 0 0 .03441 -4.13 31.66)"/>
+                    <g style="fill:#fff;fill-opacity:1">
+                        <path d="M200-160v50c0 11.33-3.83 20.83-11.5 28.5C180.83-73.83 171.33-70 160-70h-40c-11.33 0-20.83-3.83-28.5-11.5C83.83-89.17 80-98.67 80-110v-90c0-11.33 3.83-20.83 11.5-28.5 7.67-7.67 17.17-11.5 28.5-11.5h720c11.33 0 20.83 3.83 28.5 11.5 7.67 7.67 11.5 17.17 11.5 28.5v90c0 11.33-3.83 20.83-11.5 28.5C860.83-73.83 851.33-70 840-70h-40c-11.33 0-20.83-3.83-28.5-11.5-7.67-7.67-11.5-17.17-11.5-28.5v-50H540v50c0 11.33-3.83 20.83-11.5 28.5C520.83-73.83 511.33-70 500-70h-40c-11.33 0-20.83-3.83-28.5-11.5-7.67-7.67-11.5-17.17-11.5-28.5v-50zm40-160c-11.33 0-20.83-3.83-28.5-11.5-7.67-7.67-11.5-17.17-11.5-28.5v-480c0-11.33 3.83-20.83 11.5-28.5 7.67-7.67 17.17-11.5 28.5-11.5h480c11.33 0 20.83 3.83 28.5 11.5 7.67 7.67 11.5 17.17 11.5 28.5v480c0 11.33-3.83 20.83-11.5 28.5-7.67 7.67-17.17 11.5-28.5 11.5zm320-320c11.33 0 20.83-3.83 28.5-11.5 7.67-7.67 11.5-17.17 11.5-28.5 0-11.33-3.83-20.83-11.5-28.5-7.67-7.67-17.17-11.5-28.5-11.5H400c-11.33 0-20.83 3.83-28.5 11.5-7.67 7.67-11.5 17.17-11.5 28.5 0 11.33 3.83 20.83 11.5 28.5 7.67 7.67 17.17 11.5 28.5 11.5z" style="fill:#fff;fill-opacity:1;fill-rule:nonzero" transform="translate(11.23 26.82) scale(.01378)"/>
+                    </g>
+                    <g style="fill:#fff;fill-opacity:1">
+                        <path d="M714-162 537-339l84-84 177 177c11.33 11.33 17 25.33 17 42s-5.67 30.67-17 42c-11.33 11.33-25.33 17-42 17s-30.67-5.67-42-17zm-552 0c-11.33-11.33-17-25.33-17-42s5.67-30.67 17-42l234-234-68-68c-7.33 7.33-16.67 11-28 11-11.33 0-20.67-3.67-28-11l-23-23v90c0 9.33-4 15.67-12 19s-15.33 1.67-22-5L106-576c-6.67-6.67-8.33-14-5-22s9.67-12 19-12h90l-22-22c-8-8-12-17.33-12-28 0-10.67 4-20 12-28l114-114c13.33-13.33 27.67-23 43-29 15.33-6 31-9 47-9 13.33 0 25.83 2 37.5 6 11.67 4 23.17 10 34.5 18 5.33 3.33 8.17 8 8.5 14 .33 6-1.83 11.33-6.5 16l-76 76 22 22c7.33 7.33 11 16.67 11 28 0 11.33-3.67 20.67-11 28l68 68 90-90c-2.67-7.33-4.83-15-6.5-23s-2.5-16-2.5-24c0-39.33 13.5-72.5 40.5-99.5S661.67-841 701-841c5.33 0 10.33.17 15 .5 4.67.33 9.33 1.17 14 2.5 6 2 9.83 6.17 11.5 12.5s.17 11.83-4.5 16.5l-65 65c-4 4-6 8.67-6 14s2 10 6 14l44 44c4 4 8.67 6 14 6s10-2 14-6l65-65c4.67-4.67 10.17-6.33 16.5-5s10.5 5.33 12.5 12a68.66 68.66 0 0 1 2.5 14c.33 4.67.5 9.67.5 15 0 39.33-13.5 72.5-40.5 99.5S740.33-561 701-561c-8 0-16-.67-24-2a91.81 91.81 0 0 1-23-7L246-162c-11.33 11.33-25.33 17-42 17s-30.67-5.67-42-17z" style="fill:#fff;fill-opacity:1;fill-rule:nonzero" transform="translate(.14 16.5) scale(.01378)"/>
+                    </g>
+                </svg>
+            `;
+
+            // Add the SVG to the container
+            container.appendChild(svgIcon);
+
+            console.debug(`Added centered SVG icon for DataObjectReference at (${x}, ${y})`);
+        });
 
         /**
          * Loads required D3 and Sankey libraries
@@ -200,7 +257,7 @@ export default {
                 .nodeSort(null);
 
             // Process nodes and links
-            const {nodes, links} = sankey({
+            const { nodes, links } = sankey({
                 nodes: sankeyData.nodes.map(node => {
                     const type = node.type || 'default';
                     return {
@@ -276,9 +333,9 @@ export default {
              * @returns {string} SVG path string
              */
             const customLinkPath = (d) => {
-                const {source, target} = d;
-                const {x1: sourceX, y0: sourceY0, y1: sourceY1} = source;
-                const {x0: targetX, y0: targetY0, y1: targetY1} = target;
+                const { source, target } = d;
+                const { x1: sourceX, y0: sourceY0, y1: sourceY1 } = source;
+                const { x0: targetX, y0: targetY0, y1: targetY1 } = target;
 
                 // Find related links
                 const outgoingLinks = links.filter(l => l.source.id === source.id);
@@ -287,7 +344,7 @@ export default {
                 // Calculate positions
                 const sourceY = sourceY0 + ((outgoingLinks.indexOf(d) + 0.5) * (sourceY1 - sourceY0)) / outgoingLinks.length;
                 const targetY = incomingLinks.slice(0, incomingLinks.indexOf(d))
-                        .reduce((sum, link) => sum + (link.value / incomingLinks.reduce((s, l) => s + l.value, 0) * (targetY1 - targetY0)), 0) +
+                    .reduce((sum, link) => sum + (link.value / incomingLinks.reduce((s, l) => s + l.value, 0) * (targetY1 - targetY0)), 0) +
                     (d.value / (2 * incomingLinks.reduce((s, l) => s + l.value, 0)) * (targetY1 - targetY0)) + targetY0;
 
                 // Handle different link types
@@ -309,12 +366,12 @@ export default {
             }
 
             // Calculate flow metrics for visualization
-            const {maxWarehouseValue, totalWarehouseFlow} = (() => {
+            const { maxWarehouseValue, totalWarehouseFlow } = (() => {
                 const warehouseLinks = links.filter(link => !links.some(l => l.target.id === link.source.id));
                 const maxValue = warehouseLinks.length ? Math.max(...warehouseLinks.map(l => l.value)) : 0;
                 const totalFlow = warehouseLinks.reduce((sum, link) => sum + link.value, 0);
-                console.debug("Flow metrics:", {maxValue, totalFlow});
-                return {maxWarehouseValue: maxValue, totalWarehouseFlow: totalFlow};
+                console.debug("Flow metrics:", { maxValue, totalFlow });
+                return { maxWarehouseValue: maxValue, totalWarehouseFlow: totalFlow };
             })();
 
             /**
@@ -329,7 +386,7 @@ export default {
                 const computedWidth = isWarehouse
                     ? (link.value / maxWarehouseValue) * ((maxWarehouseValue / totalWarehouseFlow) * 100)
                     : link.value * (maxAllowed / links.filter(l => l.target.id === link.target.id)
-                    .reduce((sum, l) => sum + l.value, 0));
+                        .reduce((sum, l) => sum + l.value, 0));
 
                 return Math.max(PLUGIN_CONFIG.STYLES.link.minStrokeWidth,
                     Math.min(computedWidth, maxAllowed));

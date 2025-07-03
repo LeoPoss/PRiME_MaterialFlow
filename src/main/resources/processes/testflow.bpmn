@@ -5,13 +5,13 @@
     <bpmn:startEvent id="startEvent" name="Chair to be built">
       <bpmn:outgoing>Flow_1</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1" sourceRef="startEvent" targetRef="createMaterialList" />
-    <bpmn:serviceTask id="createMaterialList" name="Create Resource List" camunda:expression="true" camunda:resultVariable="t">
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="startEvent" targetRef="createResourceList" />
+    <bpmn:serviceTask id="createResourceList" name="Create Resource List" camunda:expression="true" camunda:resultVariable="t">
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_1</bpmn:incoming>
       <bpmn:outgoing>Flow_0xngy7i</bpmn:outgoing>
       <bpmn:dataOutputAssociation id="DataOutputAssociation_0bcq7pg">
-        <bpmn:targetRef>materialRequirementCollection</bpmn:targetRef>
+        <bpmn:targetRef>resourceRequirementCollection</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
     <bpmn:endEvent id="endEvent" name="Chair built">
@@ -27,7 +27,7 @@
       <bpmn:incoming>Flow_0gwoq6o</bpmn:incoming>
       <bpmn:outgoing>Flow_0f3u8dr</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:dataObjectReference id="materialRequirementCollection" name="Resource Requirement Collection" dataObjectRef="DataObject_00nryeg">
+    <bpmn:dataObjectReference id="resourceRequirementCollection" name="Resource Requirement Collection" dataObjectRef="DataObject_00nryeg">
       <bpmn:extensionElements />
     </bpmn:dataObjectReference>
     <bpmn:dataObject id="DataObject_00nryeg" isCollection="true" />
@@ -41,11 +41,11 @@
       <bpmn:incoming>Flow_0f3u8dr</bpmn:incoming>
       <bpmn:outgoing>Flow_1mnkpmi</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_0xngy7i" sourceRef="createMaterialList" targetRef="mountWoodenSlatsToTableTop" />
+    <bpmn:sequenceFlow id="Flow_0xngy7i" sourceRef="createResourceList" targetRef="mountWoodenSlatsToTableTop" />
     <bpmn:sequenceFlow id="Flow_0gwoq6o" sourceRef="mountWoodenSlatsToTableTop" targetRef="insertingCornerConnectors" />
     <bpmn:sequenceFlow id="Flow_0f3u8dr" sourceRef="insertingCornerConnectors" targetRef="attachingTableLegs" />
     <bpmn:sequenceFlow id="Flow_1mnkpmi" sourceRef="attachingTableLegs" targetRef="endEvent" />
-    <bpmn:textAnnotation id="MaterialRequirementAnnotation2">
+    <bpmn:textAnnotation id="ResourceRequirementAnnotation2">
       <bpmn:extensionElements />
       <bpmn:text>materialRequirements:
   - materialType: Connector
@@ -56,7 +56,7 @@
     materialName: Partially Assembled Table
     requiredQuantity: 1</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:textAnnotation id="MaterialRequirementAnnotation1">
+    <bpmn:textAnnotation id="ResourceRequirementAnnotation1">
       <bpmn:text>materialRequirements:
   - materialType: Screws
     materialID: M8-001
@@ -66,7 +66,7 @@
     materialName: Side Rail
     requiredQuantity: 4</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:textAnnotation id="MaterialRequirementAnnotation3">
+    <bpmn:textAnnotation id="ResourceRequirementAnnotation3">
       <bpmn:text>materialRequirements:
   - materialType: Screws
     materialID: M10-001
@@ -79,9 +79,9 @@
     materialName: Table Frame
     requiredQuantity: 1</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_1" associationDirection="None" sourceRef="MaterialRequirementAnnotation1" targetRef="mountWoodenSlatsToTableTop" />
-    <bpmn:association id="Association_2" associationDirection="None" sourceRef="MaterialRequirementAnnotation2" targetRef="insertingCornerConnectors" />
-    <bpmn:association id="Association_3" associationDirection="None" sourceRef="MaterialRequirementAnnotation3" targetRef="attachingTableLegs" />
+    <bpmn:association id="Association_1" associationDirection="None" sourceRef="ResourceRequirementAnnotation1" targetRef="mountWoodenSlatsToTableTop" />
+    <bpmn:association id="Association_2" associationDirection="None" sourceRef="ResourceRequirementAnnotation2" targetRef="insertingCornerConnectors" />
+    <bpmn:association id="Association_3" associationDirection="None" sourceRef="ResourceRequirementAnnotation3" targetRef="attachingTableLegs" />
   </bpmn:process>
   <bpmn:error id="Error_0g0ahhn" />
   <bpmn:error id="Error_1631g6c" name="Error_3kdliuf" />
@@ -94,7 +94,7 @@
           <dc:Bounds x="151" y="265" width="78" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_123jt8r_di" bpmnElement="createMaterialList">
+      <bpmndi:BPMNShape id="Activity_123jt8r_di" bpmnElement="createResourceList">
         <dc:Bounds x="280" y="200" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -108,6 +108,12 @@
         <dc:Bounds x="853" y="200" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_182mw57_di" bpmnElement="resourceRequirementCollection">
+        <dc:Bounds x="212" y="85" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="199" y="146" width="64" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1wy3eng_di" bpmnElement="mountWoodenSlatsToTableTop">
         <dc:Bounds x="564" y="200" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -115,21 +121,15 @@
       <bpmndi:BPMNShape id="Activity_11m06oq_di" bpmnElement="attachingTableLegs">
         <dc:Bounds x="1138" y="200" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectReference_182mw57_di" bpmnElement="materialRequirementCollection">
-        <dc:Bounds x="212" y="85" width="36" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="199" y="146" width="64" height="40" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_05rfgqx_di" bpmnElement="MaterialRequirementAnnotation2">
+      <bpmndi:BPMNShape id="TextAnnotation_05rfgqx_di" bpmnElement="ResourceRequirementAnnotation2">
         <dc:Bounds x="900" y="300" width="269" height="127" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1jn53w7" bpmnElement="MaterialRequirementAnnotation1">
+      <bpmndi:BPMNShape id="BPMNShape_1jn53w7" bpmnElement="ResourceRequirementAnnotation1">
         <dc:Bounds x="620" y="300" width="238" height="127" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0ioqbw2" bpmnElement="MaterialRequirementAnnotation3">
+      <bpmndi:BPMNShape id="BPMNShape_0ioqbw2" bpmnElement="ResourceRequirementAnnotation3">
         <dc:Bounds x="1190" y="300" width="218" height="170" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
