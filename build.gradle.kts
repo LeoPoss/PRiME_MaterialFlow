@@ -1,9 +1,9 @@
 plugins {
-	kotlin("jvm") version "2.2.0"
-	kotlin("plugin.spring") version "2.2.0"
-    kotlin("plugin.serialization") version "2.2.0"
-	id("org.springframework.boot") version "3.5.3"
-	id("io.spring.dependency-management") version "1.1.7"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.spring)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
 }
 
 group = "de.ur"
@@ -20,29 +20,30 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-actuator")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
-	implementation("org.yaml:snakeyaml:2.2")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.boot.starter.webflux)
+    developmentOnly(libs.spring.boot.devtools)
 
-    implementation("org.camunda.bpm:camunda-engine-rest-jakarta:7.23.0")
-    implementation("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:7.23.0")
-    implementation("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-rest:7.23.0")
-    implementation("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter:7.23.0")
-    implementation("org.camunda.bpm:camunda-engine-plugin-spin:7.23.0")
-    implementation("org.camunda.spin:camunda-spin-dataformat-all:7.23.0")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    runtimeOnly("com.h2database:h2")
+    implementation(libs.kotlin.reflect)
+    implementation(libs.jackson.module.kotlin)
+    implementation(libs.jackson.dataformat.yaml)
+    implementation(libs.snakeyaml)
 
-    implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
-    implementation("org.slf4j:slf4j-api:2.0.17")
+    implementation(libs.camunda.engine.rest.jakarta)
+    implementation(libs.camunda.bpm.spring.boot.starter.webapp)
+    implementation(libs.camunda.bpm.spring.boot.starter.rest)
+    implementation(libs.camunda.bpm.spring.boot.starter)
+
+    runtimeOnly(libs.h2)
+
+    implementation(libs.kotlin.logging)
+    implementation(libs.slf4j.api)
+
+    testImplementation(libs.spring.boot.starter.test)
+    testImplementation(kotlin("test-junit5"))
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 kotlin {

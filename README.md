@@ -107,15 +107,10 @@ src/
    - Integrates with Camunda Cockpit
    - Handles rendering of material flows between tasks
 
-2. **testflow.bpmn**
+2. **MaterialFlow.bpmn**
    - Example BPMN process demonstrating material flow annotations
    - Contains tasks with material requirements and flows
-
-3. **Controller Endpoints**
-   - `GET /api/order`: Returns the sequence of tasks from the BPMN
-   - `GET /api/sankey`: Generates data for the Sankey diagram
-   - `GET /api/materials`: Extracts material requirements from the BPMN
-
+   - 
 4. **Backend Services**
    - `MaterialService`: Parses material requirements from BPMN annotations
    - `ModelService`: Manages BPMN model operations and task ordering
