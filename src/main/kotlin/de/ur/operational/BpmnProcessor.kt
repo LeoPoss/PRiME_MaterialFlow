@@ -84,6 +84,11 @@ class BpmnProcessor(private val xmlFilePath: String) {
         val orderedTasks = mutableListOf<String>()
         val visited = mutableSetOf<String>()
         val queue = ArrayDeque<String>().apply { add(startTask) }
+        
+        // Get all start and end events to ignore them
+        val startEvents = getBpmnElements("startEvent").map { it.getAttribute("id") }.toSet()
+        val endEvents = getBpmnElements("endEvent").map { it.getAttribute("id") }.toSet()
+        val ignoredNodes = startEvents + endEvents
 
         while (queue.isNotEmpty()) {
             val current = queue.removeFirst()
@@ -91,14 +96,14 @@ class BpmnProcessor(private val xmlFilePath: String) {
             if (current !in visited) {
                 visited += current
 
-                // Process current node
+                // Process current node - only add if it's a task and not an ignored node
                 if (current in tasks) {
                     orderedTasks += current
-                } else if (!isGateway(current)) {
+                } else if (!isGateway(current) && current !in ignoredNodes) {
                     logger.warn { "Encountered unknown node '$current' in process flow" }
                 }
 
-                // Queue unvisited next nodes (could implement more sophisticated traversal in future)
+                // Queue unvisited next nodes
                 sequenceFlows[current]?.let { next ->
                     queue.addAll(next.filter { it !in visited })
                 }

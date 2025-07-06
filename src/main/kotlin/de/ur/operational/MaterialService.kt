@@ -101,28 +101,27 @@ class MaterialService {
     /**
      * Cleans the input text by removing non-breaking spaces and other problematic whitespace.
      */
-    private fun cleanInputText(text: String): String {
-        // Replace non-breaking spaces and other problematic whitespace
-        return text.trim().replace("&nbsp;", " ").replace("\u00A0", " ").replace("\uFEFF", "").replace("\r\n", "\n")
-            .lines().joinToString("\n") { it.trimEnd() }
-    }
+    private fun cleanInputText(text: String) = text.trim()
+        .replace("&nbsp;", " ")
+        .replace("\u00A0", " ")
+        .replace("\uFEFF", "")
+        .replace("\r\n", "\n")
+        .lines()
+        .joinToString("\n") { it.trimEnd() }
 
     /**
      * Parses the material requirements from the given text.
      */
-    private fun parseMaterialRequirements(text: String): MaterialRequirements {
-        return try {
-            // First try to parse as JSON
-            jsonMapper.readValue(text, MaterialRequirements::class.java)
-        } catch (jsonError: Exception) {
-            try {
-                // If JSON parsing fails, try YAML
-                yamlMapper.readValue(text, MaterialRequirements::class.java)
-            } catch (yamlError: Exception) {
-                throw IllegalArgumentException(
-                    "Failed to parse material requirements. Content must be valid JSON or YAML. " + "JSON error: ${jsonError.message}, YAML error: ${yamlError.message}"
-                )
-            }
+    private fun parseMaterialRequirements(text: String) = try {
+        jsonMapper.readValue(text, MaterialRequirements::class.java)
+    } catch (jsonError: Exception) {
+        try {
+            yamlMapper.readValue(text, MaterialRequirements::class.java)
+        } catch (yamlError: Exception) {
+            throw IllegalArgumentException(
+                "Failed to parse material requirements. Content must be valid JSON or YAML. " +
+                "JSON error: ${jsonError.message}, YAML error: ${yamlError.message}"
+            )
         }
     }
 

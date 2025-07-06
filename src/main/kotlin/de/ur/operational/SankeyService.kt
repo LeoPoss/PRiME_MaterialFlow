@@ -80,9 +80,7 @@ class SankeyService(private val modelService: ModelService, private val material
 
     private fun findLastMaterialConsumingTask(
         taskExecutionOrder: List<String?>, taskRequirementsMap: List<TaskMaterialRequirements>
-    ): String? {
-        return taskExecutionOrder.reversed().firstOrNull { taskId ->
-            taskId != null && taskRequirementsMap.any { it.taskId == taskId }
-        }
+    ) = taskExecutionOrder.reversed().firstOrNull { taskId ->
+        taskRequirementsMap.any { it.taskId == taskId }
     }
 }
