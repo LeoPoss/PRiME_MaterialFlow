@@ -1,0 +1,34 @@
+{
+  "components": [
+    {
+      "text": "# Attention!\n\nYou are currently missing the following resources that are required for the next task(s)",
+      "label": "Resources Missing",
+      "type": "text",
+      "layout": {
+        "row": "Row_1",
+        "columns": null
+      },
+      "id": "Field_1"
+    },
+    {
+      "label": "Missing Resources",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_2",
+        "columns": null
+      },
+      "id": "Field_2",
+      "key": "formattedMissingResources",
+      "readonly": true
+    }
+  ],
+  "type": "default",
+  "id": "missingResourcesForm",
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.42.0"
+  },
+  "schemaVersion": 19
+}

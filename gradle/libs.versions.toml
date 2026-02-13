@@ -8,11 +8,11 @@ spring-dependency-management = { id = "io.spring.dependency-management", version
 
 [versions]
 
-kotlin = "2.2.0"
-spring-boot = "3.5.3"
+kotlin = "2.3.0"
+spring-boot = "3.5.10"
 spring-dependency-management = "1.1.7"
-camunda = "7.23.0"
-kotlin-logging = "7.0.7"
+camunda = "7.24.0"
+kotlin-logging = "7.0.14"
 slf4j = "2.0.17"
 h2 = "2.2.224"
 

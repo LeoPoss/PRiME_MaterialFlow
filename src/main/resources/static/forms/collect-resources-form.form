@@ -1,0 +1,34 @@
+{
+  "components": [
+    {
+      "text": "# Collect the following resources you need for the task",
+      "label": "Please collect following Resources from the Inventory",
+      "type": "text",
+      "layout": {
+        "row": "Row_1",
+        "columns": null
+      },
+      "id": "Field_1"
+    },
+    {
+      "label": "Resource List",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_2",
+        "columns": null
+      },
+      "id": "Field_2",
+      "key": "formattedResourceList",
+      "readonly": true
+    }
+  ],
+  "type": "default",
+  "id": "collectResourcesForm",
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.23.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.42.0"
+  },
+  "schemaVersion": 19
+}

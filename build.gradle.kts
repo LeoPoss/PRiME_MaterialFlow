@@ -55,3 +55,7 @@ kotlin {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+tasks.bootJar {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}

@@ -117,6 +117,24 @@ src/
    - `SankeyService`: Transforms process data into Sankey diagram format
 
 
+## Resource API
+
+The application provides a REST API for managing resource inventory during process execution:
+
+### Update Resource Inventory
+
+```bash
+curl -X POST http://localhost:8080/api/resources/inventory/update \
+  -H "Content-Type: application/json" \
+  -d '{"resources":[{"resourceName":"Screw M8","resourceId":"M8-001","quantity":20,"unitOfMeasurement":"pieces","type":"Screws"}]}'
+```
+
+### Get Current Resource Inventory
+
+```bash
+curl http://localhost:8080/api/resources/inventory
+```
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
