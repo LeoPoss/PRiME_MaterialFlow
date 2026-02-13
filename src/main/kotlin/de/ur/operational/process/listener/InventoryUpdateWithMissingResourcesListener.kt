@@ -20,21 +20,28 @@ class InventoryUpdateWithMissingResourcesListener : JavaDelegate {
         ) ?: return
 
         missingResources.forEach { missing ->
-            findOrCreateItem(inventory, missing).quantity += missing.quantity
+            val item = findOrCreateItem(inventory, missing)
+            val updatedItem = item.copy(quantity = item.quantity + missing.quantity)
+            val index = inventory.resources.indexOf(item)
+            if (index >= 0) {
+                inventory.resources[index] = updatedItem
+            }
         }
 
         execution.setVariable("ResourceInventory", JsonUtil.toJson(inventory))
         execution.setVariable("MissingResourceObject", "[]")
     }
 
-    private fun findOrCreateItem(inventory: ResourceInventory, missing: ResourceObject): ResourceObject =
-        inventory.resources.find { it.resourceId == missing.resourceId && missing.resourceId != null }
+    private fun findOrCreateItem(inventory: ResourceInventory, missing: ResourceObject): ResourceObject {
+        val existing = inventory.resources.find { it.resourceId == missing.resourceId && missing.resourceId != null }
             ?: inventory.resources.find { it.resourceName == missing.resourceName && it.type == missing.type }
-            ?: ResourceObject(
-                resourceName = missing.resourceName,
-                resourceId = missing.resourceId,
-                quantity = 0.0,
-                unitOfMeasurement = missing.unitOfMeasurement,
-                type = missing.type
-            ).also { inventory.resources.add(it) }
+        
+        return existing ?: ResourceObject(
+            resourceName = missing.resourceName,
+            resourceId = missing.resourceId,
+            quantity = 0.0,
+            unitOfMeasurement = missing.unitOfMeasurement,
+            type = missing.type
+        ).also { inventory.resources.add(it) }
+    }
 }

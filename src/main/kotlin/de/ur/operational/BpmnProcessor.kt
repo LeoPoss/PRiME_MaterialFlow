@@ -1,6 +1,7 @@
 package de.ur.operational
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.stereotype.Component
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
@@ -15,15 +16,17 @@ private val GATEWAY_TYPES = listOf("exclusiveGateway", "parallelGateway", "inclu
 /**
  * Processes a BPMN file to extract task order and material requirements.
  */
-class BpmnProcessor(private val xmlFilePath: String) {
+@Component
+class BpmnProcessor {
 
     /**
      * Loads the task order from the BPMN file.
+     * @param bpmnPath Path to the BPMN file
      * @return Ordered list of task IDs
      * @throws IllegalArgumentException if the BPMN file is not found or invalid
      */
-    fun loadTaskOrder(): List<String> = File(xmlFilePath).let { file ->
-        require(file.exists()) { "BPMN file not found at $xmlFilePath" }
+    fun loadTaskOrder(bpmnPath: String): List<String> = File(bpmnPath).let { file ->
+        require(file.exists()) { "BPMN file not found at $bpmnPath" }
 
         runCatching {
             parseBpmnFile(file).let { doc ->

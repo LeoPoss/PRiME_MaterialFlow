@@ -68,7 +68,7 @@ class SankeyService(private val modelService: ModelService, private val material
         val lastMaterialConsumingTask = findLastMaterialConsumingTask(taskOrder, listTaskRequirements)
         if (lastMaterialConsumingTask != null) {
             links += SankeyLink(
-                material = "Finished Good", source = lastMaterialConsumingTask, target = "endEvent", value = 1
+                material = "Finished Good", source = lastMaterialConsumingTask, target = "endEvent", value = 1.0
             )
         }
 

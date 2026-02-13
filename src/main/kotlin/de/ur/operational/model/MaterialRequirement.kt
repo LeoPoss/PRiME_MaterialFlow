@@ -4,7 +4,7 @@ data class MaterialRequirement(
     val materialType: String,
     val materialID: String? = null,
     val materialName: String,
-    val requiredQuantity: Number,
+    val requiredQuantity: Double,
     val unitOfMeasurement: String? = null,
 )
 

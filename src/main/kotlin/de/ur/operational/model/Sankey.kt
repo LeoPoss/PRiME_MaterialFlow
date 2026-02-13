@@ -19,6 +19,6 @@ data class SankeyLink(
     val material: String,
     val source: String,
     val target: String,
-    val value: Number,
+    val value: Double,
     val unit: String? = null
 )

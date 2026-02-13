@@ -83,7 +83,7 @@ data class ResourceRequirementAnnotation(
 data class ResourceObject(
     val resourceName: String,
     val resourceId: String? = null,
-    var quantity: Double,
+    val quantity: Double,
     val unitOfMeasurement: String,
     val type: String? = null
 )

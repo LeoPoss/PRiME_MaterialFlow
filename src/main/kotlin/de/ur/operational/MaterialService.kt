@@ -31,10 +31,7 @@ class MaterialService {
      * Extracts material requirements from the BPMN file.
      */
     fun extractMaterialRequirements(bpmnPath: String): List<TaskMaterialRequirements> {
-        //val xmlFilePath = "src/main/resources/processes/MaterialFlow.bpmn"
-        val taskRequirements = mutableListOf<TaskMaterialRequirements>()
-
-        try {
+        return try {
             val xmlFile = File(bpmnPath)
             val factory = DocumentBuilderFactory.newInstance().apply {
                 isNamespaceAware = true
@@ -54,11 +51,10 @@ class MaterialService {
             val annotationRequirements = mutableMapOf<String, MaterialRequirements>()
 
             // First pass: parse all text annotations with material requirements
-            textAnnotations.asSequence().filterIsInstance<Element>() // Filter and cast to Element in one step.
+            textAnnotations.asSequence().filterIsInstance<Element>()
                 .forEach { annotation ->
                     val annotationId = annotation.getAttribute("id")
 
-                    // Use a safe cast and a let block to process only if a valid text element exists.
                     val textElement =
                         annotation.getElementsByTagNameNS("http://www.omg.org/spec/BPMN/20100524/MODEL", "text")
                             .item(0) as? Element
@@ -69,7 +65,7 @@ class MaterialService {
                             val requirements = parseMaterialRequirements(cleanedText)
                             annotationRequirements[annotationId] = requirements
                         } catch (e: Exception) {
-                            logger.error { "Failed to parse material requirements in annotation $annotationId: ${e.message}" }
+                            logger.warn { "Failed to parse material requirements in annotation $annotationId: ${e.message}" }
                         }
                     }
                 }
@@ -87,15 +83,13 @@ class MaterialService {
                 }
 
             // Convert to final result format
-            taskRequirementsMap.forEach { (taskId, requirements) ->
-                taskRequirements.add(TaskMaterialRequirements(taskId, requirements))
+            taskRequirementsMap.map { (taskId, requirements) ->
+                TaskMaterialRequirements(taskId, requirements)
             }
-
         } catch (e: Exception) {
-            e.printStackTrace()
+            logger.error(e) { "Failed to extract material requirements from BPMN: ${e.message}" }
+            emptyList()
         }
-
-        return taskRequirements
     }
 
     /**
