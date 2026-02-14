@@ -40,7 +40,7 @@ class CheckResourceAvailabilityDelegate : JavaDelegate {
         requirements: List<ResourceRequirement>,
         inventory: ResourceInventory
     ): List<ResourceObject> = requirements.mapNotNull { req ->
-        if (req is ResourceTypeRequirement && req.resourceType == "Intermediate") return@mapNotNull null
+        if (req is ResourceTypeRequirement && (req.resourceType == "Intermediate" || req.resourceType == "Tool")) return@mapNotNull null
         
         val inventoryItem = when (req) {
             is ResourceSpecificationRequirement -> 
@@ -65,7 +65,19 @@ class CheckResourceAvailabilityDelegate : JavaDelegate {
         )
     }
     
-    private fun List<ResourceObject>.formatForDisplay(): String = joinToString("\n") { 
-        "${it.resourceName}: ${it.quantity} ${it.unitOfMeasurement} missing" 
+    private fun List<ResourceObject>.formatForDisplay(): String = buildString {
+        forEach { item: ResourceObject ->
+            appendLine("- ${item.resourceName}")
+            appendLine("  Missing: ${item.quantity.toInt()} ${item.unitOfMeasurement}")
+            item.resourceId?.let { id: String -> 
+                appendLine("  ID: $id")
+            }
+            item.type?.let { t: String ->
+                appendLine("  Type: $t")
+            }
+            appendLine()
+        }
+        
+        appendLine("Total missing: ${size} items")
     }
 }

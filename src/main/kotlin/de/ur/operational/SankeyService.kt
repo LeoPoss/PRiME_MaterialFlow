@@ -22,17 +22,21 @@ class SankeyService(private val modelService: ModelService, private val material
 
         val (intermediateMaterialRequirements, materialRequirements) =
             listTaskRequirements.flatMap { it.requirements }
-                .map { it.materialName to it.materialType }.distinct()
-                .partition { (_, materialType) -> materialType.lowercase().trim() == "intermediate" }
+                .mapNotNull { it.resourceName?.let { name -> name to it.resourceType } }
+                .distinct()
+                .partition { (_, resourceType) -> resourceType?.lowercase()?.trim() == "intermediate" }
                 .let { (intermediates, others) ->
                     intermediates.map { it.first }.distinct() to others.map { it.first }.distinct()
                 }
 
         // collect all material Nodes
-        val materialNodes = materialRequirements.map { materialName ->
-            val materialType = listTaskRequirements.flatMap { it.requirements }
-                .firstOrNull { it.materialName == materialName }?.materialType ?: "default"
-            SankeyNode(materialName, materialName, materialType)
+        val materialNodes = materialRequirements.mapNotNull { resourceName ->
+            listTaskRequirements.flatMap { it.requirements }
+                .firstOrNull { it.resourceName == resourceName }?.let { req ->
+                    req.resourceType?.let { type ->
+                        SankeyNode(resourceName, resourceName, type)
+                    }
+                }
         }
 
 
@@ -48,12 +52,12 @@ class SankeyService(private val modelService: ModelService, private val material
             var previousTask: String? = ""
             listTaskRequirements.filter { it.taskId in taskOrder }.forEach { taskReq ->
                 taskReq.requirements.forEach { requirement ->
-                    val materialName = requirement.materialName
+                    val resourceName = requirement.resourceName ?: return@forEach
                     val requiredQuantity = requirement.requiredQuantity
                     val link = SankeyLink(
-                        material = materialName,
-                        source = if (materialName in intermediateMaterialRequirements) previousTask
-                            ?: materialName else materialName,
+                        material = resourceName,
+                        source = if (resourceName in intermediateMaterialRequirements) previousTask
+                            ?: resourceName else resourceName,
                         target = taskReq.taskId,
                         value = requiredQuantity,
                         unit = requirement.unitOfMeasurement

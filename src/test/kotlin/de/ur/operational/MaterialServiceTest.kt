@@ -16,11 +16,11 @@ class MaterialServiceTest {
         assertFalse(result.isEmpty())
 
         val taskWithScrews = result.find { it.taskId == "mountWoodenSlatsToTableTop" }!!
-        
-        val screwRequirement = taskWithScrews.requirements.find { it.materialName == "Screw M8" }!!
-        assertEquals("Screws", screwRequirement.materialType)
+
+        val screwRequirement = taskWithScrews.requirements.find { it.resourceName == "Screw M8" }!!
+        assertEquals("Screws", screwRequirement.resourceType)
         assertEquals(8.0, screwRequirement.requiredQuantity)
-        assertEquals("M8-001", screwRequirement.materialID)
+        assertEquals("M8-001", screwRequirement.resourceID)
     }
 
     @Test
@@ -38,7 +38,7 @@ class MaterialServiceTest {
 
         val taskWithIntermediate = result.find { it.taskId == "insertingCornerConnectors" }!!
 
-        val intermediate = taskWithIntermediate.requirements.find { it.materialType == "Intermediate" }!!
-        assertEquals("Partially Assembled Table", intermediate.materialName)
+        val intermediate = taskWithIntermediate.requirements.find { it.resourceType == "Intermediate" }!!
+        assertEquals("Partially Assembled Table", intermediate.resourceName)
     }
 }

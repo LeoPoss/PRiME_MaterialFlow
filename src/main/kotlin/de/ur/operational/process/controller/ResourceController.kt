@@ -15,7 +15,7 @@ class ResourceController(
     @PostMapping("/inventory/update")
     fun updateInventory(@RequestBody inventory: ResourceInventory): ResponseEntity<String> {
         val processInstances = runtimeService.createProcessInstanceQuery()
-            .processDefinitionKey("resourceRequirementsProcess")
+            .processDefinitionKey("trussPrefabricationProcess")
             .active()
             .list()
 
@@ -35,7 +35,7 @@ class ResourceController(
     @GetMapping("/inventory")
     fun getInventory(): ResponseEntity<ResourceInventory> {
         val processInstances = runtimeService.createProcessInstanceQuery()
-            .processDefinitionKey("resourceRequirementsProcess")
+            .processDefinitionKey("trussPrefabricationProcess")
             .active()
             .list()
 

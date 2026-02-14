@@ -1,7 +1,7 @@
 {
   "components": [
     {
-      "text": "# Attention!\n\nYou are currently missing the following resources that are required for the next task(s)",
+      "text": "# Missing Resources\n\nThe following resources are not available in sufficient quantity.",
       "label": "Resources Missing",
       "type": "text",
       "layout": {

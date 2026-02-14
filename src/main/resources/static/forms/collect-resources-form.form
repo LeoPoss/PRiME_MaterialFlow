@@ -1,8 +1,7 @@
 {
   "components": [
     {
-      "text": "# Collect the following resources you need for the task",
-      "label": "Please collect following Resources from the Inventory",
+      "text": "# Collect Resources\n\nPlease collect the following resources from the inventory before proceeding.",
       "type": "text",
       "layout": {
         "row": "Row_1",
@@ -11,7 +10,7 @@
       "id": "Field_1"
     },
     {
-      "label": "Resource List",
+      "label": "Resources",
       "type": "textarea",
       "layout": {
         "row": "Row_2",

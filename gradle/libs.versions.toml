@@ -9,6 +9,7 @@ spring-dependency-management = { id = "io.spring.dependency-management", version
 [versions]
 
 kotlin = "2.3.0"
+kotlin-serialization = "1.10.0"
 spring-boot = "3.5.10"
 spring-dependency-management = "1.1.7"
 camunda = "7.24.0"
@@ -19,6 +20,7 @@ h2 = "2.2.224"
 [libraries]
 
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization" }
 
 spring-boot-gradle-plugin = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "spring-boot" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }

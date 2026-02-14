@@ -51,13 +51,40 @@ class CreateResourceListDelegate : JavaDelegate {
             println("Failed to parse annotation: ${it.message}") 
         }.getOrNull()
     
-    private fun formatResourceList(requirements: List<ResourceRequirement>): String =
-        requirements.joinToString("\n") { req ->
-            val idOrType = when (req) {
-                is ResourceSpecificationRequirement -> req.resourceID
-                is ResourceTypeRequirement -> req.resourceType
-                else -> "Unknown"
-            }
-            "${req.resourceName} ($idOrType): ${req.requiredQuantity} ${req.unitOfMeasurement}"
+    private fun formatResourceList(requirements: List<ResourceRequirement>): String {
+        if (requirements.isEmpty()) return "No resources required"
+        
+        val tools = requirements.filter { it is ResourceTypeRequirement && it.resourceType == "Tool" }
+        val materials = requirements.filter { !(it is ResourceTypeRequirement && it.resourceType == "Tool") }
+        
+        val unitDisplay = { unit: String -> 
+            if (unit == "pieces") "×" else unit
         }
+        
+        return buildString {
+            if (tools.isNotEmpty()) {
+                appendLine("Tools:")
+                tools.forEach { req: ResourceRequirement ->
+                    val qty = "${req.requiredQuantity.toInt()} ${unitDisplay(req.unitOfMeasurement)}"
+                    appendLine("  - $qty ${req.resourceName}")
+                }
+                appendLine()
+            }
+            
+            if (materials.isNotEmpty()) {
+                appendLine("Materials:")
+                materials.forEach { req: ResourceRequirement ->
+                    val qty = "${req.requiredQuantity.toInt()} ${unitDisplay(req.unitOfMeasurement)}"
+                    val id = when (req) {
+                        is ResourceSpecificationRequirement -> " (${req.resourceID})"
+                        else -> ""
+                    }
+                    appendLine("  - $qty ${req.resourceName}$id")
+                }
+                appendLine()
+            }
+            
+            appendLine("Total: ${requirements.size} items")
+        }
+    }
 }

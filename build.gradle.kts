@@ -27,6 +27,7 @@ dependencies {
     developmentOnly(libs.spring.boot.devtools)
 
     implementation(libs.kotlin.reflect)
+    implementation(libs.kotlin.serialization.json)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.jackson.dataformat.yaml)
     implementation(libs.snakeyaml)

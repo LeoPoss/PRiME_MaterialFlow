@@ -2,87 +2,65 @@ package de.ur.operational
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import de.ur.operational.model.MaterialRequirement
 import de.ur.operational.model.MaterialRequirements
 import de.ur.operational.model.TaskMaterialRequirements
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.serialization.json.Json
 import org.springframework.stereotype.Service
 import org.w3c.dom.Element
-import org.w3c.dom.Node
-import org.w3c.dom.NodeList
 import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
 
 private val logger = KotlinLogging.logger {}
 
+private val json = Json { ignoreUnknownKeys = true; isLenient = true }
+private val yamlObjectMapper = ObjectMapper(YAMLFactory())
+private val docBuilderFactory = DocumentBuilderFactory.newInstance().apply { isNamespaceAware = true }
+private val bpmnNs = "http://www.omg.org/spec/BPMN/20100524/MODEL"
+
 @Service
 class MaterialService {
-    private val jsonMapper = ObjectMapper().registerKotlinModule()
-    private val yamlMapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
 
-    init {
-        // added for unknown/unparsable parameters
-        jsonMapper.findAndRegisterModules()
-        yamlMapper.findAndRegisterModules()
-    }
-
-    /**
-     * Extracts material requirements from the BPMN file.
-     */
     fun extractMaterialRequirements(bpmnPath: String): List<TaskMaterialRequirements> {
         return try {
-            val xmlFile = File(bpmnPath)
-            val factory = DocumentBuilderFactory.newInstance().apply {
-                isNamespaceAware = true
-            }
-            val doc = xmlFile.inputStream().use { inputStream ->
-                factory.newDocumentBuilder().parse(inputStream).apply {
-                    documentElement.normalize()
-                }
+            val doc = docBuilderFactory.newDocumentBuilder().parse(File(bpmnPath)).apply {
+                documentElement.normalize()
             }
 
-            // Get all text annotations and associations
-            val textAnnotations =
-                doc.getElementsByTagNameNS("http://www.omg.org/spec/BPMN/20100524/MODEL", "textAnnotation")
-            val associations = doc.getElementsByTagNameNS("http://www.omg.org/spec/BPMN/20100524/MODEL", "association")
+            val textAnnotations = doc.getElementsByTagNameNS(bpmnNs, "textAnnotation")
+            val associations = doc.getElementsByTagNameNS(bpmnNs, "association")
 
-            // Create a map of annotation ID to its parsed material requirements
             val annotationRequirements = mutableMapOf<String, MaterialRequirements>()
 
-            // First pass: parse all text annotations with material requirements
-            textAnnotations.asSequence().filterIsInstance<Element>()
-                .forEach { annotation ->
-                    val annotationId = annotation.getAttribute("id")
+            for (i in 0 until textAnnotations.length) {
+                val annotation = textAnnotations.item(i) as? Element ?: continue
+                val annotationId = annotation.getAttribute("id")
 
-                    val textElement =
-                        annotation.getElementsByTagNameNS("http://www.omg.org/spec/BPMN/20100524/MODEL", "text")
-                            .item(0) as? Element
+                val textNodes = annotation.getElementsByTagNameNS(bpmnNs, "text")
+                val textElement = textNodes.item(0) as? Element ?: continue
+                val textContent = textElement.textContent?.trim() ?: continue
 
-                    textElement?.textContent?.let { textContent ->
-                        try {
-                            val cleanedText = cleanInputText(textContent)
-                            val requirements = parseMaterialRequirements(cleanedText)
-                            annotationRequirements[annotationId] = requirements
-                        } catch (e: Exception) {
-                            logger.warn { "Failed to parse material requirements in annotation $annotationId: ${e.message}" }
-                        }
-                    }
+                try {
+                    val requirements = parseMaterialRequirements(textContent)
+                    annotationRequirements[annotationId] = requirements
+                } catch (e: Exception) {
+                    logger.warn { "Failed to parse material requirements in annotation $annotationId: ${e.message}" }
                 }
+            }
 
-            // Second pass: find associations between annotations and tasks
-            val taskRequirementsMap = associations.asSequence().filterIsInstance<Element>()
-                .fold(mutableMapOf<String, MutableList<MaterialRequirement>>()) { acc, association ->
-                    val sourceRef = association.getAttribute("sourceRef")
-                    val targetRef = association.getAttribute("targetRef")
+            val taskRequirementsMap = mutableMapOf<String, MutableList<MaterialRequirement>>()
+            for (i in 0 until associations.length) {
+                val association = associations.item(i) as? Element ?: continue
+                val sourceRef = association.getAttribute("sourceRef")
+                val targetRef = association.getAttribute("targetRef")
 
-                    annotationRequirements[sourceRef]?.let { annotation ->
-                        acc.getOrPut(targetRef) { mutableListOf() }.addAll(annotation.materialRequirements)
-                    }
-                    acc
+                annotationRequirements[sourceRef]?.let { annotation ->
+                    taskRequirementsMap.getOrPut(targetRef) { mutableListOf() }
+                        .addAll(annotation.getRequirements())
                 }
+            }
 
-            // Convert to final result format
             taskRequirementsMap.map { (taskId, requirements) ->
                 TaskMaterialRequirements(taskId, requirements)
             }
@@ -92,36 +70,33 @@ class MaterialService {
         }
     }
 
-    /**
-     * Cleans the input text by removing non-breaking spaces and other problematic whitespace.
-     */
-    private fun cleanInputText(text: String) = text.trim()
-        .replace("&nbsp;", " ")
-        .replace("\u00A0", " ")
-        .replace("\uFEFF", "")
-        .replace("\r\n", "\n")
-        .lines()
-        .joinToString("\n") { it.trimEnd() }
-
-    /**
-     * Parses the material requirements from the given text.
-     */
-    private fun parseMaterialRequirements(text: String) = try {
-        jsonMapper.readValue(text, MaterialRequirements::class.java)
-    } catch (jsonError: Exception) {
+    private fun parseMaterialRequirements(text: String): MaterialRequirements {
+        // Try JSON first
         try {
-            yamlMapper.readValue(text, MaterialRequirements::class.java)
-        } catch (yamlError: Exception) {
-            throw IllegalArgumentException(
-                "Failed to parse material requirements. Content must be valid JSON or YAML. " +
-                "JSON error: ${jsonError.message}, YAML error: ${yamlError.message}"
-            )
+            return json.decodeFromString<MaterialRequirements>(text)
+        } catch (e: Exception) {
+            logger.debug { "JSON parsing failed, trying YAML: ${e.message}" }
         }
-    }
-
-    fun NodeList.asSequence(): Sequence<Node> = sequence {
-        for (i in 0 until length) {
-            yield(item(i))
+        
+        // Fall back to YAML
+        return try {
+            val map = yamlObjectMapper.readValue(text, Map::class.java)
+            val requirementsList = map["resourceRequirements"] as? List<*>
+            val materialRequirements = requirementsList?.mapNotNull { item ->
+                val itemMap = item as? Map<*, *>
+                itemMap?.let { map ->
+                    MaterialRequirement(
+                        resourceType = map["resourceType"] as? String,
+                        resourceID = map["resourceID"] as? String,
+                        resourceName = map["resourceName"] as? String,
+                        requiredQuantity = (map["requiredQuantity"] as? Number)?.toDouble() ?: 0.0,
+                        unitOfMeasurement = map["unitOfMeasurement"] as? String
+                    )
+                }
+            }
+            MaterialRequirements(resourceRequirements = materialRequirements)
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Failed to parse both JSON and YAML: ${e.message}")
         }
     }
 }
