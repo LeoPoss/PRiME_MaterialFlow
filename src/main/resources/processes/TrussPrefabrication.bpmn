@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.36.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:message id="Message_TransportedToSite" name="TransportedToSite" />
+  <bpmn:process id="trussPrefabricationProcess" name="Truss Prefabrication (Requirements)" isExecutable="true" camunda:versionTag="1.0" camunda:historyTimeToLive="180">
+    <bpmn:extensionElements />
+    <bpmn:startEvent id="startEvent" name="Start Prefabrication and Assembly">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="startEvent" targetRef="createMaterialList" />
+    <bpmn:serviceTask id="createMaterialList" name="Create Resource List" camunda:class="de.ur.operational.process.delegate.CreateResourceListDelegate">
+      <bpmn:extensionElements>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1_1</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_1">
+        <bpmn:targetRef>resourceRequirementCollection</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1_1" sourceRef="createMaterialList" targetRef="collectMaterials" />
+    <bpmn:userTask id="collectMaterials" name="Collect Resources" camunda:formKey="camunda-forms:/forms/collect-resources-form.form" camunda:formRefBinding="latest" camunda:candidateUsers="admin">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="de.ur.operational.process.listener.ResourceInventoryStartListener" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dxz4nx</bpmn:outgoing>
+      <bpmn:property id="Property_1" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_1">
+        <bpmn:sourceRef>resourceRequirementCollection</bpmn:sourceRef>
+        <bpmn:targetRef>Property_1</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_2">
+        <bpmn:targetRef>DataObjectReference_Inventory</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1dxz4nx" sourceRef="collectMaterials" targetRef="checkMaterialAvailability" />
+    <bpmn:serviceTask id="checkMaterialAvailability" name="Check Resource Availability" camunda:class="de.ur.operational.process.delegate.ResourceCheckDelegate">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_1dxz4nx</bpmn:incoming>
+      <bpmn:incoming>Flow_1tlmeh6</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+      <bpmn:property id="Property_2" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_2">
+        <bpmn:sourceRef>resourceRequirementCollection</bpmn:sourceRef>
+        <bpmn:targetRef>Property_2</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+      <bpmn:dataInputAssociation id="DataInputAssociation_3">
+        <bpmn:sourceRef>DataObjectReference_Inventory</bpmn:sourceRef>
+        <bpmn:targetRef>Property_2</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="checkMaterialAvailability" targetRef="materialCheckGateway" />
+    <bpmn:exclusiveGateway id="materialCheckGateway" name="All required Resources available?">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_4" name="Yes" sourceRef="materialCheckGateway" targetRef="prefabricateBeams">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{MissingResourceObject == "[]" || MissingResourceObject == null}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_5" name="No" sourceRef="materialCheckGateway" targetRef="handleMaterialShortage">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{MissingResourceObject != "[]" &amp;&amp; MissingResourceObject != null}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="handleMaterialShortage" name="Handle Resource Shortage" camunda:formKey="camunda-forms:/forms/missing-resources-form.form">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="de.ur.operational.process.listener.InventoryUpdateWithMissingResourcesListener" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tlmeh6</bpmn:outgoing>
+      <bpmn:property id="Property_3" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_4">
+        <bpmn:sourceRef>DataObjectReference_Missing</bpmn:sourceRef>
+        <bpmn:targetRef>Property_3</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1tlmeh6" sourceRef="handleMaterialShortage" targetRef="checkMaterialAvailability" />
+    <bpmn:userTask id="prefabricateBeams" name="Prefabricate Beams and Joints">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="de.ur.operational.process.listener.LastCompletedTaskListener" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5a</bpmn:outgoing>
+      <bpmn:property id="Property_4" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_5">
+        <bpmn:sourceRef>DataObjectReference_Inventory</bpmn:sourceRef>
+        <bpmn:targetRef>Property_4</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_5a" sourceRef="prefabricateBeams" targetRef="updateResourceInventory1" />
+    <bpmn:serviceTask id="updateResourceInventory1" name="Update Resource Inventory" camunda:class="de.ur.operational.process.delegate.InventoryUpdateDelegate">
+      <bpmn:incoming>Flow_5a</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_3">
+        <bpmn:targetRef>resourceInventory1</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="updateResourceInventory1" targetRef="transportedToSite" />
+    <bpmn:intermediateCatchEvent id="transportedToSite" name="Transported to Site">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1" messageRef="Message_TransportedToSite" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="transportedToSite" targetRef="collectResourcesSite" />
+    <bpmn:userTask id="collectResourcesSite" name="Collect Resources">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="de.ur.operational.process.listener.ResourceInventoryStartListener" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+      <bpmn:property id="Property_5" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_6">
+        <bpmn:sourceRef>resourceRequirementCollection</bpmn:sourceRef>
+        <bpmn:targetRef>Property_5</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_4">
+        <bpmn:targetRef>resourceInventory2</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="collectResourcesSite" targetRef="checkMaterialAvailability2" />
+    <bpmn:serviceTask id="checkMaterialAvailability2" name="Check Resource Availability" camunda:class="de.ur.operational.process.delegate.CheckResourceAvailabilityDelegate">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="de.ur.operational.process.listener.NextTaskListener" event="start" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+      <bpmn:property id="Property_6" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_7">
+        <bpmn:sourceRef>resourceRequirement</bpmn:sourceRef>
+        <bpmn:targetRef>Property_6</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+      <bpmn:dataInputAssociation id="DataInputAssociation_8">
+        <bpmn:sourceRef>resourceInventory2</bpmn:sourceRef>
+        <bpmn:targetRef>Property_6</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="checkMaterialAvailability2" targetRef="Gateway_2" />
+    <bpmn:exclusiveGateway id="Gateway_2" name="All required Resources available?">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_11" name="Yes" sourceRef="Gateway_2" targetRef="assembleTruss">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{MissingResourceObject == "[]" || MissingResourceObject == null}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_10" name="No" sourceRef="Gateway_2" targetRef="handleMaterialShortage2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{MissingResourceObject != "[]" &amp;&amp; MissingResourceObject != null}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="handleMaterialShortage2" name="Handle Resource Shortage" camunda:formKey="camunda-forms:/forms/missing-resources-form.form">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="de.ur.operational.process.listener.InventoryUpdateWithMissingResourcesListener" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+      <bpmn:property id="Property_7" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_9">
+        <bpmn:sourceRef>DataObjectReference_Missing2</bpmn:sourceRef>
+        <bpmn:targetRef>Property_7</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="handleMaterialShortage2" targetRef="checkMaterialAvailability2" />
+    <bpmn:userTask id="assembleTruss" name="Assemble and Erect Truss">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="de.ur.operational.process.listener.LastCompletedTaskListener" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+      <bpmn:property id="Property_8" name="__targetRef_placeholder" />
+      <bpmn:dataInputAssociation id="DataInputAssociation_10">
+        <bpmn:sourceRef>resourceInventory2</bpmn:sourceRef>
+        <bpmn:targetRef>Property_8</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="assembleTruss" targetRef="updateResourceInventory2" />
+    <bpmn:serviceTask id="updateResourceInventory2" name="Update Resource Inventory" camunda:class="de.ur.operational.process.delegate.InventoryUpdateDelegate">
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_14</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_5">
+        <bpmn:targetRef>resourceInventory3</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="updateResourceInventory2" targetRef="endEvent" />
+    <bpmn:endEvent id="endEvent" name="Truss Built">
+      <bpmn:incoming>Flow_14</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:dataObjectReference id="resourceRequirementCollection" name="Resource Requirement Collection" dataObjectRef="DataObject_Requirements" />
+    <bpmn:dataObject id="DataObject_Requirements" />
+    <bpmn:dataObjectReference id="DataObjectReference_Inventory" name="Resource Inventory" dataObjectRef="DataObject_Inventory" />
+    <bpmn:dataObject id="DataObject_Inventory" />
+    <bpmn:dataObjectReference id="DataObjectReference_Missing" name="Missing Resources" dataObjectRef="DataObject_Missing" />
+    <bpmn:dataObject id="DataObject_Missing" />
+    <bpmn:dataObjectReference id="resourceInventory1" name="Resource Inventory" dataObjectRef="DataObject_Inventory1" />
+    <bpmn:dataObject id="DataObject_Inventory1" />
+    <bpmn:dataObjectReference id="resourceInventory2" name="Resource Inventory" dataObjectRef="DataObject_Inventory2" />
+    <bpmn:dataObject id="DataObject_Inventory2" />
+    <bpmn:dataObjectReference id="resourceRequirement" name="Material Requirement" dataObjectRef="DataObject_Requirement" />
+    <bpmn:dataObject id="DataObject_Requirement" />
+    <bpmn:dataObjectReference id="DataObjectReference_Missing2" name="Missing Resources" dataObjectRef="DataObject_Missing2" />
+    <bpmn:dataObject id="DataObject_Missing2" />
+    <bpmn:dataObjectReference id="resourceInventory3" name="Resource Inventory" dataObjectRef="DataObject_Inventory3" />
+    <bpmn:dataObject id="DataObject_Inventory3" />
+    <bpmn:textAnnotation id="ResourceRequirementAnnotation1">
+      <bpmn:text>{
+  "resourceRequirements": [
+    {
+      "resourceType": "Tool",
+      "resourceName": "Circular Saw",
+      "requiredQuantity": 1,
+      "unitOfMeasurement": "pieces"
+    },
+    {
+      "resourceType": "Tool",
+      "resourceName": "Cordless Drill",
+      "requiredQuantity": 1,
+      "unitOfMeasurement": "pieces"
+    },
+    {
+      "resourceType": "RawMaterial",
+      "resourceName": "Pine Beam 150x200mm",
+      "requiredQuantity": 12,
+      "unitOfMeasurement": "meters"
+    },
+    {
+      "resourceType": "RawMaterial",
+      "resourceName": "Rafter",
+      "requiredQuantity": 10,
+      "unitOfMeasurement": "pieces"
+    }
+  ]
+}</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="ResourceRequirementAnnotation2">
+      <bpmn:text>{
+  "resourceRequirements": [
+    {
+      "resourceType": "Tool",
+      "resourceName": "Crane",
+      "requiredQuantity": 1,
+      "unitOfMeasurement": "pieces"
+    },
+    {
+      "resourceType": "Tool",
+      "resourceName": "Impact Driver",
+      "requiredQuantity": 1,
+      "unitOfMeasurement": "pieces"
+    },
+    {
+      "resourceType": "Tool",
+      "resourceName": "Hammer",
+      "requiredQuantity": 1,
+      "unitOfMeasurement": "pieces"
+    },
+    {
+      "resourceType": "Consumable",
+      "resourceID": "S-10x200",
+      "resourceName": "Structural Screw 10x200mm",
+      "requiredQuantity": 200,
+      "unitOfMeasurement": "pieces"
+    },
+    {
+      "resourceType": "Connector",
+      "resourceID": "C-90-L",
+      "resourceName": "Angle Bracket 90mm",
+      "requiredQuantity": 50,
+      "unitOfMeasurement": "pieces"
+    },
+    {
+      "resourceType": "Consumable",
+      "resourceName": "Nail 80mm",
+      "requiredQuantity": 1,
+      "unitOfMeasurement": "kg"
+    }
+  ]
+}</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1" associationDirection="None" sourceRef="ResourceRequirementAnnotation1" targetRef="prefabricateBeams" />
+    <bpmn:association id="Association_2" associationDirection="None" sourceRef="ResourceRequirementAnnotation2" targetRef="assembleTruss" />
+  </bpmn:process>
+  <bpmn:error id="Error_1" name="Error_MaterialShortage" errorCode="RESOURCE_SHORTAGE" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="trussPrefabricationProcess">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="startEvent">
+        <dc:Bounds x="172" y="312" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="144" y="355" width="93" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1_di" bpmnElement="createMaterialList">
+        <dc:Bounds x="270" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_2_di" bpmnElement="collectMaterials">
+        <dc:Bounds x="440" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_3_di" bpmnElement="checkMaterialAvailability">
+        <dc:Bounds x="610" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1_di" bpmnElement="materialCheckGateway" isMarkerVisible="true">
+        <dc:Bounds x="785" y="305" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="775" y="260" width="71" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_4_di" bpmnElement="handleMaterialShortage">
+        <dc:Bounds x="610" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_5_di" bpmnElement="prefabricateBeams">
+        <dc:Bounds x="910" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_6_di" bpmnElement="updateResourceInventory1">
+        <dc:Bounds x="1070" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1_di" bpmnElement="transportedToSite">
+        <dc:Bounds x="1232" y="312" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1215" y="355" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_7_di" bpmnElement="collectResourcesSite">
+        <dc:Bounds x="1330" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_8_di" bpmnElement="checkMaterialAvailability2">
+        <dc:Bounds x="1500" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_2_di" bpmnElement="Gateway_2" isMarkerVisible="true">
+        <dc:Bounds x="1680" y="305" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1670" y="260" width="71" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_9_di" bpmnElement="handleMaterialShortage2">
+        <dc:Bounds x="1500" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10_di" bpmnElement="assembleTruss">
+        <dc:Bounds x="1800" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11_di" bpmnElement="updateResourceInventory2">
+        <dc:Bounds x="1970" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_2_di" bpmnElement="endEvent">
+        <dc:Bounds x="2132" y="312" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2118" y="355" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="208" y="330" />
+        <di:waypoint x="270" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1_1_di" bpmnElement="Flow_1_1">
+        <di:waypoint x="370" y="330" />
+        <di:waypoint x="440" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dxz4nx_di" bpmnElement="Flow_1dxz4nx">
+        <di:waypoint x="540" y="330" />
+        <di:waypoint x="610" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="710" y="330" />
+        <di:waypoint x="785" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="835" y="330" />
+        <di:waypoint x="910" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="865" y="312" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="810" y="355" />
+        <di:waypoint x="810" y="460" />
+        <di:waypoint x="710" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="818" y="404" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tlmeh6_di" bpmnElement="Flow_1tlmeh6">
+        <di:waypoint x="660" y="420" />
+        <di:waypoint x="660" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5a_di" bpmnElement="Flow_5a">
+        <di:waypoint x="1010" y="330" />
+        <di:waypoint x="1070" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="1170" y="330" />
+        <di:waypoint x="1232" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1268" y="330" />
+        <di:waypoint x="1330" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="1430" y="330" />
+        <di:waypoint x="1500" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="1600" y="330" />
+        <di:waypoint x="1680" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11_di" bpmnElement="Flow_11">
+        <di:waypoint x="1730" y="330" />
+        <di:waypoint x="1800" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1760" y="312" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
+        <di:waypoint x="1705" y="355" />
+        <di:waypoint x="1705" y="460" />
+        <di:waypoint x="1600" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1713" y="404" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
+        <di:waypoint x="1550" y="420" />
+        <di:waypoint x="1550" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13_di" bpmnElement="Flow_13">
+        <di:waypoint x="1900" y="330" />
+        <di:waypoint x="1970" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14_di" bpmnElement="Flow_14">
+        <di:waypoint x="2070" y="330" />
+        <di:waypoint x="2132" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_1_di" bpmnElement="ResourceRequirementAnnotation1">
+        <dc:Bounds x="910" y="420" width="200" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_2_di" bpmnElement="ResourceRequirementAnnotation2">
+        <dc:Bounds x="1800" y="420" width="200" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1_di" bpmnElement="Association_1">
+        <di:waypoint x="1010" y="420" />
+        <di:waypoint x="1010" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_2_di" bpmnElement="Association_2">
+        <di:waypoint x="1900" y="420" />
+        <di:waypoint x="1900" y="370" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
