@@ -1625,29 +1625,10 @@
       "resourceName": "Washer M12",
       "requiredQuantity": 400,
       "unitOfMeasurement": "pieces"
-    },
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Connector",
-      "resourceID": "C-90-L",
-      "resourceName": "Angle Bracket 90mm",
-      "requiredQuantity": 50,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceName": "Nail 80mm",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "kg"
     }
   ]
 }</bpmn:text>
     </bpmn:textAnnotation>
-    <bpmn:association id="Association_1cu46tf" associationDirection="None" sourceRef="TextAnnotation_0vcxfr5" targetRef="Activity_07t6jxs" />
-    <bpmn:association id="Association_1935f3e" associationDirection="None" sourceRef="TextAnnotation_0q4i0as" targetRef="Activity_1p8kfk5" />
-    <bpmn:association id="Association_15ksj8g" associationDirection="None" sourceRef="TextAnnotation_0up3vaj" targetRef="Activity_16lw3q2" />
-    <bpmn:association id="Association_0h0l9zj" associationDirection="None" sourceRef="TextAnnotation_1yg7dcl" targetRef="Activity_03ue33e" />
     <bpmn:textAnnotation id="TextAnnotation_1k9b3cy">
       <bpmn:text>{
   "resourceRequirements": [
