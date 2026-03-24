@@ -1,0 +1,6 @@
+NumTasks,NumAnnotations,TotalResources,TaskExtractionMean,TaskExtractionSD,MaterialParsingMean,MaterialParsingSD,SankeyTransformMean,SankeyTransformSD,TotalLatencyMean,TotalLatencySD
+10,2,6,2.23,0.36,1.50,0.42,4.04,0.44,7.77,0.95
+50,10,30,3.57,0.67,2.98,1.11,7.10,0.77,13.66,1.14
+100,20,60,4.01,0.46,2.82,0.46,7.25,0.72,14.08,1.09
+200,40,120,4.62,0.55,3.31,0.95,8.85,1.79,16.77,2.66
+500,100,300,5.46,0.67,4.15,0.69,12.65,1.10,22.26,1.44
