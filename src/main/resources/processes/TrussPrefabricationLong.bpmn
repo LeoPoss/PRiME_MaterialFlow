@@ -1374,46 +1374,46 @@
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="ResourceRequirementAnnotation2">
       <bpmn:text>{
-  "resourceRequirements": [
-    {
-      "resourceType": "Tool",
-      "resourceName": "Crane",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Impact Driver",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Hammer",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceID": "S-10x200",
-      "resourceName": "Structural Screw 10x200mm",
-      "requiredQuantity": 200,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Connector",
-      "resourceID": "C-90-L",
-      "resourceName": "Angle Bracket 90mm",
-      "requiredQuantity": 50,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceName": "Nail 80mm",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "kg"
-    }
-  ]
+"resourceRequirements": [
+{
+"resourceType": "Tool",
+"resourceName": "Crane",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Impact Driver",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Hammer",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceID": "S-10x200",
+"resourceName": "Structural Screw 10x200mm",
+"requiredQuantity": 200,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Connector",
+"resourceID": "C-90-L",
+"resourceName": "Angle Bracket 90mm",
+"requiredQuantity": 50,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceName": "Nail 80mm",
+"requiredQuantity": 1,
+"unitOfMeasurement": "kg"
+}
+]
 }</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1" associationDirection="None" sourceRef="ResourceRequirementAnnotation1" targetRef="prefabricateBeams" />
@@ -1450,46 +1450,46 @@
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1plxilj">
       <bpmn:text>{
-  "resourceRequirements": [
-    {
-      "resourceType": "Equipment",
-      "resourceName": "Forklift",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Air Compressor",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Framing Square",
-      "requiredQuantity": 2,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceID": "S-8x160",
-      "resourceName": "Deck Screw 8x160mm",
-      "requiredQuantity": 300,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Connector",
-      "resourceID": "C-90-L",
-      "resourceName": "Angle Bracket 90mm",
-      "requiredQuantity": 50,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceName": "Nail 80mm",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "kg"
-    }
-  ]
+"resourceRequirements": [
+{
+"resourceType": "Tool",
+"resourceName": "Crane",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Impact Driver",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Hammer",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceID": "S-10x200",
+"resourceName": "Structural Screw 10x200mm",
+"requiredQuantity": 200,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Connector",
+"resourceID": "C-90-L",
+"resourceName": "Angle Bracket 90mm",
+"requiredQuantity": 50,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceName": "Nail 80mm",
+"requiredQuantity": 1,
+"unitOfMeasurement": "kg"
+}
+]
 }</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1j8a6im" associationDirection="None" sourceRef="TextAnnotation_15pwjh1" targetRef="Activity_0n41f8t" />
@@ -1526,46 +1526,46 @@
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0q4i0as">
       <bpmn:text>{
-  "resourceRequirements": [
-    {
-      "resourceType": "Equipment",
-      "resourceName": "Hoist System",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Drill Press",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Tape Measure 10m",
-      "requiredQuantity": 3,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceID": "B-100",
-      "resourceName": "Ball Bearing 100mm",
-      "requiredQuantity": 50,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Connector",
-      "resourceID": "C-90-L",
-      "resourceName": "Angle Bracket 90mm",
-      "requiredQuantity": 50,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceName": "Nail 80mm",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "kg"
-    }
-  ]
+"resourceRequirements": [
+{
+"resourceType": "Tool",
+"resourceName": "Crane",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Impact Driver",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Hammer",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceID": "S-10x200",
+"resourceName": "Structural Screw 10x200mm",
+"requiredQuantity": 200,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Connector",
+"resourceID": "C-90-L",
+"resourceName": "Angle Bracket 90mm",
+"requiredQuantity": 50,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceName": "Nail 80mm",
+"requiredQuantity": 1,
+"unitOfMeasurement": "kg"
+}
+]
 }</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0up3vaj">
@@ -1600,33 +1600,46 @@
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1yg7dcl">
       <bpmn:text>{
-  "resourceRequirements": [
-    {
-      "resourceType": "Equipment",
-      "resourceName": "Platform Lift",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Palm Nailer",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Clamp Set",
-      "requiredQuantity": 8,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceID": "W-50",
-      "resourceName": "Washer M12",
-      "requiredQuantity": 400,
-      "unitOfMeasurement": "pieces"
-    }
-  ]
+"resourceRequirements": [
+{
+"resourceType": "Tool",
+"resourceName": "Crane",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Impact Driver",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Hammer",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceID": "S-10x200",
+"resourceName": "Structural Screw 10x200mm",
+"requiredQuantity": 200,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Connector",
+"resourceID": "C-90-L",
+"resourceName": "Angle Bracket 90mm",
+"requiredQuantity": 50,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceName": "Nail 80mm",
+"requiredQuantity": 1,
+"unitOfMeasurement": "kg"
+}
+]
 }</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1k9b3cy">
@@ -1661,48 +1674,46 @@
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1yyc01j">
       <bpmn:text>{
-  "resourceRequirements": [
-    {
-      "resourceType": "Equipment",
-      "resourceName": "Winch",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Bench Vise",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Spirit Level",
-      "requiredQuantity": 2,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceID": "N-60",
-      "resourceName": "Wire Nail 60mm",
-      "requiredQuantity": 500,
-      "unitOfMeasurement": "pieces"
-    },
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Connector",
-      "resourceID": "C-90-L",
-      "resourceName": "Angle Bracket 90mm",
-      "requiredQuantity": 50,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceName": "Nail 80mm",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "kg"
-    }
-  ]
+"resourceRequirements": [
+{
+"resourceType": "Tool",
+"resourceName": "Crane",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Impact Driver",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Hammer",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceID": "S-10x200",
+"resourceName": "Structural Screw 10x200mm",
+"requiredQuantity": 200,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Connector",
+"resourceID": "C-90-L",
+"resourceName": "Angle Bracket 90mm",
+"requiredQuantity": 50,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceName": "Nail 80mm",
+"requiredQuantity": 1,
+"unitOfMeasurement": "kg"
+}
+]
 }</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1h0444j">
@@ -1737,49 +1748,46 @@
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1gq31zu">
       <bpmn:text>{
-  "resourceRequirements": [
-    {
-      "resourceType": "Equipment",
-      "resourceName": "Conveyor Belt",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "meters"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Pallet Jack",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Corner Brace",
-      "requiredQuantity": 12,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceID": "TB-60",
-      "resourceName": "Timber Bolt M12x60mm",
-      "requiredQuantity": 150,
-      "unitOfMeasurement": "pieces"
-    },
-      "requiredQuantity": 200,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Connector",
-      "resourceID": "C-90-L",
-      "resourceName": "Angle Bracket 90mm",
-      "requiredQuantity": 50,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceName": "Nail 80mm",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "kg"
-    }
-  ]
+"resourceRequirements": [
+{
+"resourceType": "Tool",
+"resourceName": "Crane",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Impact Driver",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Hammer",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceID": "S-10x200",
+"resourceName": "Structural Screw 10x200mm",
+"requiredQuantity": 200,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Connector",
+"resourceID": "C-90-L",
+"resourceName": "Angle Bracket 90mm",
+"requiredQuantity": 50,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceName": "Nail 80mm",
+"requiredQuantity": 1,
+"unitOfMeasurement": "kg"
+}
+]
 }</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0pwmmvm" associationDirection="None" sourceRef="TextAnnotation_1k9b3cy" targetRef="Activity_0ksv2qv" />
@@ -1818,55 +1826,46 @@
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0z1k531">
       <bpmn:text>{
-  "resourceRequirements": [
-    {
-      "resourceType": "Equipment",
-      "resourceName": "Boom Lift",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Stud Finder",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Laser Level",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceID": "H-80",
-      "resourceName": "Hex Head Bolt M10x80mm",
-      "requiredQuantity": 250,
-      "unitOfMeasurement": "pieces"
-    },
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceID": "S-10x200",
-      "resourceName": "Structural Screw 10x200mm",
-      "requiredQuantity": 200,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Connector",
-      "resourceID": "C-90-L",
-      "resourceName": "Angle Bracket 90mm",
-      "requiredQuantity": 50,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceName": "Nail 80mm",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "kg"
-    }
-  ]
+"resourceRequirements": [
+{
+"resourceType": "Tool",
+"resourceName": "Crane",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Impact Driver",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Hammer",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceID": "S-10x200",
+"resourceName": "Structural Screw 10x200mm",
+"requiredQuantity": 200,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Connector",
+"resourceID": "C-90-L",
+"resourceName": "Angle Bracket 90mm",
+"requiredQuantity": 50,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceName": "Nail 80mm",
+"requiredQuantity": 1,
+"unitOfMeasurement": "kg"
+}
+]
 }</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0ya6dq1">
@@ -1901,32 +1900,46 @@
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0a66saq">
       <bpmn:text>{
-  "resourceRequirements": [
-    {
-      "resourceType": "Tool",
-      "resourceName": "Compound Miter Saw",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Brad Nailer",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "RawMaterial",
-      "resourceName": "Mahogany Board 30x120mm",
-      "requiredQuantity": 7,
-      "unitOfMeasurement": "meters"
-    },
-    {
-      "resourceType": "Hardware",
-      "resourceName": "Hinge Door",
-      "requiredQuantity": 10,
-      "unitOfMeasurement": "pairs"
-    }
-  ]
+"resourceRequirements": [
+{
+"resourceType": "Tool",
+"resourceName": "Crane",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Impact Driver",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Hammer",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceID": "S-10x200",
+"resourceName": "Structural Screw 10x200mm",
+"requiredQuantity": 200,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Connector",
+"resourceID": "C-90-L",
+"resourceName": "Angle Bracket 90mm",
+"requiredQuantity": 50,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceName": "Nail 80mm",
+"requiredQuantity": 1,
+"unitOfMeasurement": "kg"
+}
+]
 }</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0h1joen">
@@ -1961,48 +1974,46 @@
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0rprhir">
       <bpmn:text>{
-  "resourceRequirements": [
-    {
-      "resourceType": "Equipment",
-      "resourceName": "Overhead Crane",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Torque Wrench",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Socket Set",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "set"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceID": "A-50",
-      "resourceName": "Anchor Bolt M16",
-      "requiredQuantity": 80,
-      "unitOfMeasurement": "pieces"
-    },
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Connector",
-      "resourceID": "C-90-L",
-      "resourceName": "Angle Bracket 90mm",
-      "requiredQuantity": 50,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceName": "Nail 80mm",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "kg"
-    }
-  ]
+"resourceRequirements": [
+{
+"resourceType": "Tool",
+"resourceName": "Crane",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Impact Driver",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Hammer",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceID": "S-10x200",
+"resourceName": "Structural Screw 10x200mm",
+"requiredQuantity": 200,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Connector",
+"resourceID": "C-90-L",
+"resourceName": "Angle Bracket 90mm",
+"requiredQuantity": 50,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceName": "Nail 80mm",
+"requiredQuantity": 1,
+"unitOfMeasurement": "kg"
+}
+]
 }</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_09ct49l">
@@ -2037,46 +2048,46 @@
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_042r6v7">
       <bpmn:text>{
-  "resourceRequirements": [
-    {
-      "resourceType": "Tool",
-      "resourceName": "Crane",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Impact Driver",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Hammer",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceID": "S-10x200",
-      "resourceName": "Structural Screw 10x200mm",
-      "requiredQuantity": 200,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Connector",
-      "resourceID": "C-90-L",
-      "resourceName": "Angle Bracket 90mm",
-      "requiredQuantity": 50,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceName": "Nail 80mm",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "kg"
-    }
-  ]
+"resourceRequirements": [
+{
+"resourceType": "Tool",
+"resourceName": "Crane",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Impact Driver",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Hammer",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceID": "S-10x200",
+"resourceName": "Structural Screw 10x200mm",
+"requiredQuantity": 200,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Connector",
+"resourceID": "C-90-L",
+"resourceName": "Angle Bracket 90mm",
+"requiredQuantity": 50,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceName": "Nail 80mm",
+"requiredQuantity": 1,
+"unitOfMeasurement": "kg"
+}
+]
 }</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_11ylfma">
@@ -2111,46 +2122,46 @@
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0wuk08e">
       <bpmn:text>{
-  "resourceRequirements": [
-    {
-      "resourceType": "Tool",
-      "resourceName": "Crane",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Impact Driver",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Hammer",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceID": "S-10x200",
-      "resourceName": "Structural Screw 10x200mm",
-      "requiredQuantity": 200,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Connector",
-      "resourceID": "C-90-L",
-      "resourceName": "Angle Bracket 90mm",
-      "requiredQuantity": 50,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceName": "Nail 80mm",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "kg"
-    }
-  ]
+"resourceRequirements": [
+{
+"resourceType": "Tool",
+"resourceName": "Crane",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Impact Driver",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Hammer",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceID": "S-10x200",
+"resourceName": "Structural Screw 10x200mm",
+"requiredQuantity": 200,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Connector",
+"resourceID": "C-90-L",
+"resourceName": "Angle Bracket 90mm",
+"requiredQuantity": 50,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceName": "Nail 80mm",
+"requiredQuantity": 1,
+"unitOfMeasurement": "kg"
+}
+]
 }</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1w890j1">
@@ -2185,46 +2196,46 @@
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_1pyvwkl">
       <bpmn:text>{
-  "resourceRequirements": [
-    {
-      "resourceType": "Tool",
-      "resourceName": "Crane",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Impact Driver",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Tool",
-      "resourceName": "Hammer",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceID": "S-10x200",
-      "resourceName": "Structural Screw 10x200mm",
-      "requiredQuantity": 200,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Connector",
-      "resourceID": "C-90-L",
-      "resourceName": "Angle Bracket 90mm",
-      "requiredQuantity": 50,
-      "unitOfMeasurement": "pieces"
-    },
-    {
-      "resourceType": "Consumable",
-      "resourceName": "Nail 80mm",
-      "requiredQuantity": 1,
-      "unitOfMeasurement": "kg"
-    }
-  ]
+"resourceRequirements": [
+{
+"resourceType": "Tool",
+"resourceName": "Crane",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Impact Driver",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Tool",
+"resourceName": "Hammer",
+"requiredQuantity": 1,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceID": "S-10x200",
+"resourceName": "Structural Screw 10x200mm",
+"requiredQuantity": 200,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Connector",
+"resourceID": "C-90-L",
+"resourceName": "Angle Bracket 90mm",
+"requiredQuantity": 50,
+"unitOfMeasurement": "pieces"
+},
+{
+"resourceType": "Consumable",
+"resourceName": "Nail 80mm",
+"requiredQuantity": 1,
+"unitOfMeasurement": "kg"
+}
+]
 }</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1mfrmx5" associationDirection="None" sourceRef="TextAnnotation_0qoz57y" targetRef="Activity_0uuhxtf" />
@@ -2817,73 +2828,85 @@
         <dc:Bounds x="910" y="240" width="200" height="150" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_2_di" bpmnElement="ResourceRequirementAnnotation2">
-        <dc:Bounds x="1800" y="240" width="200" height="180" />
+        <dc:Bounds x="1800" y="240" width="199.99020376175548" height="645.7680250783699" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1ca5w9r" bpmnElement="TextAnnotation_15pwjh1">
         <dc:Bounds x="2490" y="240" width="200" height="150" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0231dxr" bpmnElement="TextAnnotation_1plxilj">
-        <dc:Bounds x="3380" y="240" width="200" height="180" />
+        <dc:Bounds x="3380" y="240" width="199.99020376175548" height="645.7680250783699" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0lpe0m0" bpmnElement="TextAnnotation_0vcxfr5">
         <dc:Bounds x="920" y="1100" width="200" height="150" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0wi3ai6" bpmnElement="TextAnnotation_0q4i0as">
-        <dc:Bounds x="1810" y="1100" width="200" height="180" />
+        <dc:Bounds x="1810" y="1100" width="199.99020376175548" height="645.9884404388714" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0fjxtwf" bpmnElement="TextAnnotation_0up3vaj">
         <dc:Bounds x="2500" y="1100" width="200" height="150" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0jpdkm7" bpmnElement="TextAnnotation_1yg7dcl">
-        <dc:Bounds x="3390" y="1100" width="200" height="180" />
+        <dc:Bounds x="3390" y="1100" width="199.99020376175548" height="645.7680250783699" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0n8040s" bpmnElement="TextAnnotation_1k9b3cy">
         <dc:Bounds x="920" y="2060" width="200" height="150" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0aqcsy0" bpmnElement="TextAnnotation_1yyc01j">
-        <dc:Bounds x="1810" y="2060" width="200" height="180" />
+        <dc:Bounds x="1810" y="2060" width="199.99020376175548" height="645.9884404388714" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0h1fr2e" bpmnElement="TextAnnotation_1h0444j">
         <dc:Bounds x="2500" y="2060" width="200" height="150" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0kmda8x" bpmnElement="TextAnnotation_1gq31zu">
-        <dc:Bounds x="3390" y="2060" width="200" height="180" />
+        <dc:Bounds x="3390" y="2060" width="199.99020376175548" height="645.7680250783699" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_14qncjk" bpmnElement="TextAnnotation_0qoz57y">
         <dc:Bounds x="950" y="2970" width="200" height="150" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_15mi9wy" bpmnElement="TextAnnotation_0z1k531">
-        <dc:Bounds x="1840" y="2970" width="200" height="180" />
+        <dc:Bounds x="1840" y="2970" width="199.99020376175548" height="645.9884404388714" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0biol4m" bpmnElement="TextAnnotation_0ya6dq1">
         <dc:Bounds x="2530" y="2970" width="200" height="150" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1s0531k" bpmnElement="TextAnnotation_0a66saq">
-        <dc:Bounds x="3420" y="2970" width="200" height="180" />
+        <dc:Bounds x="3420" y="2970" width="199.99020376175548" height="645.7680250783699" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1xbdlru" bpmnElement="TextAnnotation_0h1joen">
         <dc:Bounds x="960" y="3830" width="200" height="150" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1vso3y4" bpmnElement="TextAnnotation_0rprhir">
-        <dc:Bounds x="1850" y="3830" width="200" height="180" />
+        <dc:Bounds x="1850" y="3830" width="199.99020376175548" height="645.9884404388714" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0pnmp0a" bpmnElement="TextAnnotation_09ct49l">
         <dc:Bounds x="2540" y="3830" width="200" height="150" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0loxqvq" bpmnElement="TextAnnotation_042r6v7">
-        <dc:Bounds x="3430" y="3830" width="200" height="180" />
+        <dc:Bounds x="3430" y="3830" width="199.99020376175548" height="645.7680250783699" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_021tlto" bpmnElement="TextAnnotation_11ylfma">
         <dc:Bounds x="960" y="4790" width="200" height="150" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0b0zx6i" bpmnElement="TextAnnotation_0wuk08e">
-        <dc:Bounds x="1850" y="4790" width="200" height="180" />
+        <dc:Bounds x="1850" y="4790" width="199.99020376175548" height="645.9884404388714" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0rspr4n" bpmnElement="TextAnnotation_1w890j1">
         <dc:Bounds x="2540" y="4790" width="200" height="150" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0w0mv8c" bpmnElement="TextAnnotation_1pyvwkl">
-        <dc:Bounds x="3430" y="4790" width="200" height="180" />
+        <dc:Bounds x="3430" y="4790" width="199.99020376175548" height="645.7680250783699" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
         <di:waypoint x="208" y="150" />
@@ -3773,7 +3796,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_2_di" bpmnElement="Association_2">
         <di:waypoint x="1900" y="240" />
-        <di:waypoint x="1900" y="190" />
+        <di:waypoint x="1900" y="180" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_17auprw" bpmnElement="Association_1j8a6im">
         <di:waypoint x="2590" y="240" />
@@ -3781,23 +3804,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_0dg43is" bpmnElement="Association_1i0uwhz">
         <di:waypoint x="3480" y="240" />
-        <di:waypoint x="3480" y="190" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_00ck855" bpmnElement="Association_1cu46tf">
-        <di:waypoint x="1020" y="1100" />
-        <di:waypoint x="1020" y="1050" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_1a1epks" bpmnElement="Association_1935f3e">
-        <di:waypoint x="1910" y="1100" />
-        <di:waypoint x="1910" y="1050" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_0lq3d2j" bpmnElement="Association_15ksj8g">
-        <di:waypoint x="2600" y="1100" />
-        <di:waypoint x="2600" y="1050" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_0ktoho5" bpmnElement="Association_0h0l9zj">
-        <di:waypoint x="3490" y="1100" />
-        <di:waypoint x="3490" y="1050" />
+        <di:waypoint x="3480" y="180" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_0ep8krh" bpmnElement="Association_0pwmmvm">
         <di:waypoint x="1020" y="2060" />
@@ -3805,7 +3812,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_06m756p" bpmnElement="Association_1cgdmkt">
         <di:waypoint x="1910" y="2060" />
-        <di:waypoint x="1910" y="2010" />
+        <di:waypoint x="1910" y="2000" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_06fjtmh" bpmnElement="Association_08xrnae">
         <di:waypoint x="2600" y="2060" />
@@ -3813,7 +3820,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_0mu7wbd" bpmnElement="Association_1fdjrdb">
         <di:waypoint x="3490" y="2060" />
-        <di:waypoint x="3490" y="2010" />
+        <di:waypoint x="3490" y="2000" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_029cd66" bpmnElement="Association_1mfrmx5">
         <di:waypoint x="1050" y="2970" />
@@ -3821,7 +3828,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_1subabq" bpmnElement="Association_1cm3ih6">
         <di:waypoint x="1940" y="2970" />
-        <di:waypoint x="1940" y="2920" />
+        <di:waypoint x="1940" y="2910" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_0c0mhak" bpmnElement="Association_0pxji8m">
         <di:waypoint x="2630" y="2970" />
@@ -3829,7 +3836,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_1i4plf8" bpmnElement="Association_02dgx36">
         <di:waypoint x="3520" y="2970" />
-        <di:waypoint x="3520" y="2920" />
+        <di:waypoint x="3520" y="2910" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_0azi9qo" bpmnElement="Association_039xdvm">
         <di:waypoint x="1060" y="3830" />
@@ -3837,7 +3844,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_165snr8" bpmnElement="Association_00uxwed">
         <di:waypoint x="1950" y="3830" />
-        <di:waypoint x="1950" y="3780" />
+        <di:waypoint x="1950" y="3770" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_0ln6j2x" bpmnElement="Association_1wufqdd">
         <di:waypoint x="2640" y="3830" />
@@ -3845,7 +3852,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_0kc704x" bpmnElement="Association_0blgmdt">
         <di:waypoint x="3530" y="3830" />
-        <di:waypoint x="3530" y="3780" />
+        <di:waypoint x="3530" y="3770" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_0iik3md" bpmnElement="Association_17smwgp">
         <di:waypoint x="1060" y="4790" />
@@ -3853,7 +3860,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_1ld20rv" bpmnElement="Association_0hprewo">
         <di:waypoint x="1950" y="4790" />
-        <di:waypoint x="1950" y="4740" />
+        <di:waypoint x="1950" y="4730" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_0d3yovp" bpmnElement="Association_08md48j">
         <di:waypoint x="2640" y="4790" />
@@ -3861,7 +3868,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_03g3dff" bpmnElement="Association_0fje1ht">
         <di:waypoint x="3530" y="4790" />
-        <di:waypoint x="3530" y="4740" />
+        <di:waypoint x="3530" y="4730" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
