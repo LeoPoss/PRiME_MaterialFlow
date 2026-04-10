@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
 
 @Configuration
 class WebClientConfig {
@@ -54,7 +55,7 @@ class SankeyController(
         val processDefinition = webClient.get()
             .uri("/process-definition/key/{key}", key)
             .retrieve()
-            .bodyToMono(ProcessDefinition::class.java)
+            .bodyToMono<ProcessDefinition>()
             .block()
             ?: throw IllegalStateException("Process definition not found for key: $key")
 

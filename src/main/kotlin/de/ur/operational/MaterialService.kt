@@ -78,25 +78,84 @@ class MaterialService {
             logger.debug { "JSON parsing failed, trying YAML: ${e.message}" }
         }
         
-        // Fall back to YAML
+        // Fall back to YAML with backward-compatible and new paper format handling
         return try {
-            val map = yamlObjectMapper.readValue(text, Map::class.java)
-            val requirementsList = map["resourceRequirements"] as? List<*>
-            val materialRequirements = requirementsList?.mapNotNull { item ->
-                val itemMap = item as? Map<*, *>
-                itemMap?.let { map ->
-                    MaterialRequirement(
-                        resourceType = map["resourceType"] as? String,
-                        resourceID = map["resourceID"] as? String,
-                        resourceName = map["resourceName"] as? String,
-                        requiredQuantity = (map["requiredQuantity"] as? Number)?.toDouble() ?: 0.0,
-                        unitOfMeasurement = map["unitOfMeasurement"] as? String
-                    )
+            val map = yamlObjectMapper.readValue(text, Map::class.java) as Map<*, *>
+
+            // WF2: paper format check - if root contains 'requirements', parse paper format
+            if (map.containsKey("requirements")) {
+                val root = map["requirements"] as? Map<*, *>
+                    ?: throw IllegalArgumentException("WF2: 'requirements' root must be a map")
+
+                val toolsList = (root["tools"] as? List<*>)?.filterNotNull() ?: emptyList()
+                val materialsList = (root["materials"] as? List<*>)?.filterNotNull() ?: emptyList()
+
+                val results = mutableListOf<MaterialRequirement>()
+
+                // Map tools -> MaterialRequirement with resourceType = 'Tool'
+                for (toolObj in toolsList) {
+                    val toolMap = toolObj as? Map<*, *>
+                    val toolType = toolMap?.get("toolType") as? String
+                    val resourceName = toolMap?.get("resourceName") as? String ?: toolType
+                    val resourceID = toolMap?.get("resourceID") as? String
+                    val requiredQuantity = (toolMap?.get("requiredQuantity") as? Number)?.toDouble() ?: 1.0
+                    val unit = toolMap?.get("unitOfMeasurement") as? String
+
+                    if (toolType != null) {
+                        results.add(
+                            MaterialRequirement(
+                                resourceType = "Tool",
+                                resourceID = resourceID,
+                                resourceName = resourceName,
+                                requiredQuantity = requiredQuantity,
+                                unitOfMeasurement = unit
+                            )
+                        )
+                    }
                 }
+
+                // Map materials -> MaterialRequirement
+                for (matObj in materialsList) {
+                    val matMap = matObj as? Map<*, *>
+                    val resourceName = matMap?.get("materialName") as? String
+                    val requiredQuantity = (matMap?.get("requiredQuantity") as? Number)?.toDouble()
+                    val resourceType = (matMap?.get("materialType") as? String) ?: "RawMaterial"
+                    val resourceID = matMap?.get("materialID") as? String
+                    val unit = matMap?.get("unitOfMeasurement") as? String
+
+                    if (resourceName != null && requiredQuantity != null) {
+                        results.add(
+                            MaterialRequirement(
+                                resourceType = resourceType,
+                                resourceID = resourceID,
+                                resourceName = resourceName,
+                                requiredQuantity = requiredQuantity,
+                                unitOfMeasurement = unit
+                            )
+                        )
+                    }
+                }
+
+                MaterialRequirements(resourceRequirements = results)
+            } else {
+                // WF2: existing resourceRequirements root (backward compatibility)
+                val requirementsList = map["resourceRequirements"] as? List<*>
+                val materialRequirements = requirementsList?.mapNotNull { item ->
+                    val itemMap = item as? Map<*, *>
+                    itemMap?.let { map ->
+                        MaterialRequirement(
+                            resourceType = map["resourceType"] as? String,
+                            resourceID = map["resourceID"] as? String,
+                            resourceName = map["resourceName"] as? String,
+                            requiredQuantity = (map["requiredQuantity"] as? Number)?.toDouble() ?: 0.0,
+                            unitOfMeasurement = map["unitOfMeasurement"] as? String
+                        )
+                    }
+                }
+                MaterialRequirements(resourceRequirements = materialRequirements)
             }
-            MaterialRequirements(resourceRequirements = materialRequirements)
         } catch (e: Exception) {
-            throw IllegalArgumentException("Failed to parse both JSON and YAML: ${e.message}")
+            throw IllegalArgumentException("Failed to parse YAML paper-format or legacy JSON/YAML: ${e.message}")
         }
     }
 }

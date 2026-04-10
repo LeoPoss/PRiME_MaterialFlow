@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_L5" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="L5ParallelToolTest" name="Test: L5 Parallel Tool Exclusion" isExecutable="true">
+    <bpmn:startEvent id="startEvent" />
+    <!-- Parallel gateway sending flow to two branches -->
+    <bpmn:parallelGateway id="parallelGateway" name="Parallel Branch">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_Branch1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Branch2</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <!-- Branch 1: needs drill -->
+    <bpmn:userTask id="branchTask1" name="Drill Holes in Frame">
+      <bpmn:incoming>Flow_Branch1</bpmn:incoming>
+      <bpmn:outgoing>Flow_Merge</bpmn:outgoing>
+    </bpmn:userTask>
+    <!-- Branch 2: also needs drill (EXCLUSIVE TOOL VIOLATION) -->
+    <bpmn:userTask id="branchTask2" name="Drill Holes in Legs">
+      <bpmn:incoming>Flow_Branch2</bpmn:incoming>
+      <bpmn:outgoing>Flow_Merge</bpmn:outgoing>
+    </bpmn:userTask>
+    <!-- Merge gateway -->
+    <bpmn:parallelGateway id="mergeGateway" name="Merge">
+      <bpmn:incoming>Flow_Merge</bpmn:incoming>
+      <bpmn:outgoing>Flow_End</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:endEvent id="endEvent">
+      <bpmn:incoming>Flow_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="startEvent" targetRef="parallelGateway" />
+    <bpmn:sequenceFlow id="Flow_Branch1" sourceRef="parallelGateway" targetRef="branchTask1" />
+    <bpmn:sequenceFlow id="Flow_Branch2" sourceRef="parallelGateway" targetRef="branchTask2" />
+    <bpmn:sequenceFlow id="Flow_Merge" sourceRef="branchTask1" targetRef="mergeGateway" />
+    <bpmn:sequenceFlow id="Flow_Merge2" sourceRef="branchTask2" targetRef="mergeGateway" />
+    <bpmn:sequenceFlow id="Flow_End" sourceRef="mergeGateway" targetRef="endEvent" />
+    <!-- Annotation for branch task 1 - requires exclusive tool "Drill" -->
+    <bpmn:textAnnotation id="Annotation_Branch1">
+      <bpmn:text>requirements:
+  materials: []
+  tools:
+    - toolType: Drill
+      brand: Makita
+      model: DDF484</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Assoc_Branch1" sourceRef="Annotation_Branch1" targetRef="branchTask1" />
+    <!-- Annotation for branch task 2 - requires SAME exclusive tool "Drill" (L5 violation) -->
+    <bpmn:textAnnotation id="Annotation_Branch2">
+      <bpmn:text>requirements:
+  materials: []
+  tools:
+    - toolType: Drill
+      brand: Makita
+      model: DDF484</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Assoc_Branch2" sourceRef="Annotation_Branch2" targetRef="branchTask2" />
+  </bpmn:process>
+</bpmn:definitions>

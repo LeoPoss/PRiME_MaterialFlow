@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Definitions_L1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="L1DepletionTest" name="Test: L1 Depletion (Fails)" isExecutable="true">
+    <bpmn:startEvent id="startEvent" />
+    <bpmn:userTask id="consumeTask" name="Consumes More Than Initial">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="endEvent">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="startEvent" targetRef="consumeTask" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="consumeTask" targetRef="endEvent" />
+    <bpmn:textAnnotation id="Annotation_L1">
+      <bpmn:text>requirements:
+  materials:
+    - materialType: RawMaterial
+      materialID: GLUE-001
+      materialName: Wood Glue
+      requiredQuantity: 200
+      unitOfMeasurement: ml
+  tools: []</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_L1" sourceRef="Annotation_L1" targetRef="consumeTask" />
+  </bpmn:process>
+</bpmn:definitions>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_test" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="testMissingQuantity" name="Test: Missing Required Quantity (WF4, C5)" isExecutable="true">
+    <bpmn:startEvent id="startEvent" />
+    <bpmn:userTask id="task1" name="Task with Missing Quantity">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="endEvent">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="startEvent" targetRef="task1" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="task1" targetRef="endEvent" />
+    <bpmn:textAnnotation id="Annotation_MissingQty">
+      <bpmn:text>requirements:
+  materials:
+    - materialType: Screws
+      materialID: M8-001
+      materialName: Screw M8
+      requiredQuantity: -5
+      unitOfMeasurement: pcs</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1" sourceRef="Annotation_MissingQty" targetRef="task1" />
+  </bpmn:process>
+</bpmn:definitions>

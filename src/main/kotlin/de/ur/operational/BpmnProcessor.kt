@@ -126,8 +126,6 @@ class BpmnProcessor {
      */
     private fun Document.getBpmnElements(tagName: String): Sequence<Element> {
         val nodeList = getElementsByTagNameNS(BPMN_NAMESPACE, tagName)
-        return (0 until nodeList.length).asSequence()
-            .map { nodeList.item(it) as? Element }
-            .filterNotNull()
+        return (0 until nodeList.length).asSequence().mapNotNull { nodeList.item(it) as? Element }
     }
 }
